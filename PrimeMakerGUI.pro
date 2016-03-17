@@ -15,12 +15,15 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     dialogsettingproperties.cpp \
-    dialograpidtask.cpp
+    dialograpidtask.cpp \
+    dialogcustomtask.cpp
 
 HEADERS  += mainwindow.h \
     dialogsettingproperties.h \
-    dialograpidtask.h
+    dialograpidtask.h \
+    dialogcustomtask.h
 
 FORMS    += mainwindow.ui \
     dialogsettingproperties.ui \
-    dialograpidtask.ui
+    dialograpidtask.ui \
+    dialogcustomtask.ui

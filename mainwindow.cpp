@@ -18,3 +18,9 @@ void MainWindow::on_action_4_triggered()
     Form_Setting_Properties = new DialogSettingProperties();
     Form_Setting_Properties->exec();
 }
+
+void MainWindow::on_action_triggered()
+{
+    Form_Rapid_Task = new DialogRapidTask();
+    Form_Rapid_Task->exec();
+}
