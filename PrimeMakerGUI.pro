@@ -13,8 +13,11 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    dialogsettingproperties.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    dialogsettingproperties.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    dialogsettingproperties.ui
