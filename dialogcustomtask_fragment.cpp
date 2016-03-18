@@ -6,6 +6,7 @@ DialogCustomTask_Fragment::DialogCustomTask_Fragment(QWidget *parent) :
     ui(new Ui::DialogCustomTask_Fragment)
 {
     ui->setupUi(this);
+    setWindowFlags(windowFlags() &~ (Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint));
 }
 
 DialogCustomTask_Fragment::~DialogCustomTask_Fragment()

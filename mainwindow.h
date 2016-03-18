@@ -3,7 +3,9 @@
 #include "dialogsettingproperties.h"
 #include "dialogcustomtask_file.h"
 #include "dialogcustomtask_fragment.h"
+#include "dialogcustomtask_pair.h"
 #include "dialograpidtask.h"
+#include "dialogaboutme.h"
 #include <QMainWindow>
 
 namespace Ui {
@@ -22,6 +24,8 @@ public:
     DialogRapidTask *Form_Rapid_Task;
     DialogCustomTask_File *Form_Custom_Task_File;
     DialogCustomTask_Fragment *Form_Custom_Task_Fragment;
+    DialogCustomTask_Pair *Form_Custom_Task_Pair;
+    DialogAboutMe *About_Me;
 
 
 
@@ -31,6 +35,8 @@ private slots:
     void on_action_triggered();
 
     void on_action_2_triggered();
+
+    void on_action_3_triggered();
 
 private:
     Ui::MainWindow *ui;

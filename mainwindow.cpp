@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <iostream>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -28,10 +29,20 @@ void MainWindow::on_action_triggered()
 void MainWindow::on_action_2_triggered()
 {
     Form_Custom_Task_File = new DialogCustomTask_File();
-    Form_Custom_Task_File->exec();
-    std::string str = "";
-    if(Form_Custom_Task_File->Accepted){
+    if(Form_Custom_Task_File->exec() == QDialog::Accepted){
         Form_Custom_Task_Fragment = new DialogCustomTask_Fragment();
-        Form_Custom_Task_Fragment->exec();
+        if(Form_Custom_Task_Fragment->exec() == QDialog::Accepted){
+            Form_Custom_Task_Pair = new DialogCustomTask_Pair();
+            if(Form_Custom_Task_Pair->exec() == QDialog::Accepted){
+                ui->lineEdit->setText(QString::fromStdString("Test"));
+            }
+        }
+
     }
+}
+
+void MainWindow::on_action_3_triggered()
+{
+    About_Me = new DialogAboutMe();
+    About_Me->exec();
 }
