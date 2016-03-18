@@ -34,7 +34,7 @@ void MainWindow::on_action_2_triggered()
         if(Form_Custom_Task_Fragment->exec() == QDialog::Accepted){
             Form_Custom_Task_Pair = new DialogCustomTask_Pair();
             if(Form_Custom_Task_Pair->exec() == QDialog::Accepted){
-                ui->lineEdit->setText(QString::fromStdString("Test"));
+
             }
         }
 
