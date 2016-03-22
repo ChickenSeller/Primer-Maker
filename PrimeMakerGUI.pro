@@ -27,7 +27,8 @@ HEADERS  += mainwindow.h \
     dialogcustomtask_file.h \
     dialogcustomtask_fragment.h \
     dialogcustomtask_pair.h \
-    dialogaboutme.h
+    dialogaboutme.h \
+    datadef.h
 
 FORMS    += mainwindow.ui \
     dialogsettingproperties.ui \
