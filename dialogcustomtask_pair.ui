@@ -16,9 +16,9 @@
   <widget class="QLineEdit" name="lineEdit_7">
    <property name="geometry">
     <rect>
-     <x>58</x>
+     <x>110</x>
      <y>10</y>
-     <width>91</width>
+     <width>61</width>
      <height>21</height>
     </rect>
    </property>
@@ -28,7 +28,7 @@
     <rect>
      <x>8</x>
      <y>26</y>
-     <width>54</width>
+     <width>101</width>
      <height>51</height>
     </rect>
    </property>
@@ -39,9 +39,9 @@
   <widget class="QLineEdit" name="lineEdit_9">
    <property name="geometry">
     <rect>
-     <x>170</x>
+     <x>200</x>
      <y>10</y>
-     <width>91</width>
+     <width>61</width>
      <height>21</height>
     </rect>
    </property>
@@ -51,7 +51,7 @@
     <rect>
      <x>8</x>
      <y>-4</y>
-     <width>54</width>
+     <width>91</width>
      <height>51</height>
     </rect>
    </property>
@@ -62,9 +62,9 @@
   <widget class="QLineEdit" name="lineEdit_8">
    <property name="geometry">
     <rect>
-     <x>58</x>
+     <x>110</x>
      <y>40</y>
-     <width>203</width>
+     <width>151</width>
      <height>21</height>
     </rect>
    </property>
@@ -72,8 +72,8 @@
   <widget class="QLabel" name="label_9">
    <property name="geometry">
     <rect>
-     <x>155</x>
-     <y>20</y>
+     <x>180</x>
+     <y>10</y>
      <width>16</width>
      <height>16</height>
     </rect>
@@ -108,20 +108,21 @@
     <string>取消</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label">
+  <widget class="QTextBrowser" name="textBrowser">
    <property name="geometry">
     <rect>
      <x>10</x>
      <y>110</y>
-     <width>251</width>
-     <height>81</height>
+     <width>256</width>
+     <height>91</height>
     </rect>
    </property>
-   <property name="text">
-    <string>产物长度指引物对的PCR产物的长度
-补充长度指在不能找到两个特异性序列组成引物
-对的情况下，与一个特异性序列组成引物对的非
-特异性序列的长度</string>
+   <property name="html">
+    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Cantarell'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;产物长度指引物对的PCR产物的长度补充长度指在不能找到两个特异性序列组成引物对的情况下，与一个特异性序列组成引物对的非特异性序列的长度&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
  </widget>
