@@ -27,6 +27,7 @@ public:
     DialogCustomTask_Pair *Form_Custom_Task_Pair;
     DialogAboutMe *About_Me;
     void SaveConfig();
+    void LoadConfig();
     void test();
 
 

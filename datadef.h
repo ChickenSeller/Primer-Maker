@@ -45,3 +45,12 @@ public:
         return json;
     }
 };
+#ifndef TEST1H
+#define TEST1H
+extern Config config;
+#endif
+
+
+
+
+
