@@ -7,7 +7,7 @@ DialogAboutMe::DialogAboutMe(QWidget *parent) :
     ui(new Ui::DialogAboutMe)
 {
     ui->setupUi(this);
-    ui->label_3->setText(QString::fromStdString(config.sourceGenus));
+    //ui->label_3->setText(QString::fromStdString(config.sourceGenus));
 }
 
 DialogAboutMe::~DialogAboutMe()

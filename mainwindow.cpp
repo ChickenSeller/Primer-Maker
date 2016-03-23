@@ -29,7 +29,10 @@ MainWindow::~MainWindow()
 void MainWindow::on_action_4_triggered()
 {
     Form_Setting_Properties = new DialogSettingProperties();
-    Form_Setting_Properties->exec();
+    LoadConfig();
+    if(Form_Setting_Properties->exec() == QDialog::Accepted){
+        SaveConfig();
+    }
 }
 
 void MainWindow::on_action_triggered()

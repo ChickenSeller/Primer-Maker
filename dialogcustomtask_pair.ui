@@ -128,22 +128,6 @@
  <resources/>
  <connections>
   <connection>
-   <sender>pushButton</sender>
-   <signal>clicked()</signal>
-   <receiver>DialogCustomTask_Pair</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>130</x>
-     <y>88</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>57</x>
-     <y>84</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>pushButton_2</sender>
    <signal>clicked()</signal>
    <receiver>DialogCustomTask_Pair</receiver>

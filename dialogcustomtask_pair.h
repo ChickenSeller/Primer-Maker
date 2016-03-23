@@ -14,6 +14,11 @@ class DialogCustomTask_Pair : public QDialog
 public:
     explicit DialogCustomTask_Pair(QWidget *parent = 0);
     ~DialogCustomTask_Pair();
+    void getConfig();
+
+
+private slots:
+    void on_pushButton_clicked();
 
 private:
     Ui::DialogCustomTask_Pair *ui;

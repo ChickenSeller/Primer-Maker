@@ -54,9 +54,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>15</y>
+      <y>6</y>
       <width>71</width>
-      <height>16</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
@@ -67,9 +67,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>45</y>
+      <y>30</y>
       <width>71</width>
-      <height>16</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
@@ -132,9 +132,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>20</y>
+      <y>6</y>
       <width>131</width>
-      <height>16</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
@@ -151,16 +151,16 @@
      </rect>
     </property>
     <property name="text">
-     <string>70%</string>
+     <string/>
     </property>
    </widget>
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>40</y>
+      <y>25</y>
       <width>91</width>
-      <height>16</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
@@ -171,22 +171,22 @@
     <property name="geometry">
      <rect>
       <x>110</x>
-      <y>42</y>
+      <y>23</y>
       <width>54</width>
-      <height>12</height>
+      <height>51</height>
      </rect>
     </property>
     <property name="text">
-     <string>20-25</string>
+     <string/>
     </property>
    </widget>
    <widget class="QLabel" name="label_7">
     <property name="geometry">
      <rect>
       <x>160</x>
-      <y>40</y>
+      <y>25</y>
       <width>101</width>
-      <height>16</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
@@ -197,22 +197,22 @@
     <property name="geometry">
      <rect>
       <x>260</x>
-      <y>42</y>
+      <y>29</y>
       <width>54</width>
-      <height>12</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>3</string>
+     <string/>
     </property>
    </widget>
    <widget class="QLabel" name="label_9">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>60</y>
+      <y>45</y>
       <width>81</width>
-      <height>16</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
@@ -223,22 +223,22 @@
     <property name="geometry">
      <rect>
       <x>90</x>
-      <y>62</y>
+      <y>43</y>
       <width>54</width>
-      <height>12</height>
+      <height>51</height>
      </rect>
     </property>
     <property name="text">
-     <string>200-300</string>
+     <string/>
     </property>
    </widget>
    <widget class="QLabel" name="label_11">
     <property name="geometry">
      <rect>
       <x>160</x>
-      <y>60</y>
+      <y>41</y>
       <width>54</width>
-      <height>12</height>
+      <height>51</height>
      </rect>
     </property>
     <property name="text">
@@ -249,13 +249,13 @@
     <property name="geometry">
      <rect>
       <x>230</x>
-      <y>60</y>
+      <y>46</y>
       <width>54</width>
-      <height>12</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
-     <string>25</string>
+     <string/>
     </property>
    </widget>
   </widget>

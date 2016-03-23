@@ -14,6 +14,12 @@ class DialogRapidTask : public QDialog
 public:
     explicit DialogRapidTask(QWidget *parent = 0);
     ~DialogRapidTask();
+    void getConfig();
+
+private slots:
+    void on_pushButton_clicked();
+
+    void on_pushButton_2_clicked();
 
 private:
     Ui::DialogRapidTask *ui;
