@@ -39,3 +39,5 @@ FORMS    += mainwindow.ui \
     dialogcustomtask_fragment.ui \
     dialogcustomtask_pair.ui \
     dialogaboutme.ui
+
+CONFIG += console

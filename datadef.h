@@ -64,6 +64,10 @@ public:
     int posA;
     int posB;
 };
+class GenusList{
+public:
+    vector <Species> genus;
+};
 
 #ifndef DATASTRUCT_H
 #define DATASTRUCT_H

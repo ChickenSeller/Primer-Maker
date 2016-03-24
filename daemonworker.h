@@ -13,6 +13,7 @@ public:
     void trimStr(string& str);
     vector <string> GetCommonFragment(string stringA,string stringB,int fragmentLengthBottom,int fragmentLengthTop);
     vector <string> GetCommonFragmentEx(string stringA, string stringB,int fragmentLengthBottom,int fragmentLengthTop);
+    GenusList genusList;
 };
 
 #endif // DAEMONWORKER_H

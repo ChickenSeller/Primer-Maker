@@ -55,6 +55,7 @@ void MainWindow::on_action_triggered()
         DaemonWorker worker;
         string s = "";
         GenusCollection collection = worker.LoadSourceGenus(config.sourceGenus);
+        /*
         for(int i=0;i<collection.genus.size();i++){
             Genus currentGenus = collection.genus[i];
             for(int j=0;j<currentGenus.species.size();j++){
@@ -67,7 +68,17 @@ void MainWindow::on_action_triggered()
                 //ui->plainTextEdit->setPlainText(QString::fromStdString(currentSpecies.name+ tempInt +"\n")+ui->plainTextEdit->toPlainText());
             }
         }
+        */
+        Genus currentGenus = collection.genus[1];
+        Species currentSpecies = currentGenus.species[3];
+        vector <string> CommonFragment = worker.GetCommonFragment(currentSpecies.fragment,currentGenus.species[4].fragment,config.fragmentLengthBottom,config.fragmentLengthTop);
+        for(int i=0;i<CommonFragment.size();i++){
+            s+=CommonFragment[i]+"\n";
+        }
         ui->plainTextEdit->setPlainText(QString::fromStdString(s));
+        newstr<<CommonFragment.size();
+        newstr>>tempInt;
+        //ui->plainTextEdit->setPlainText(QString::fromStdString(currentSpecies.fragment+"\n\n"+currentGenus.species[2].fragment));
 
 
 

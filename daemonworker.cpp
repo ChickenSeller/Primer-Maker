@@ -1,5 +1,6 @@
 #include "daemonworker.h"
 #include <QDir>
+#include <QDebug>
 
 DaemonWorker::DaemonWorker()
 {
@@ -80,20 +81,6 @@ vector <string> DaemonWorker::GetCommonFragment(string stringA, string stringB,i
         }
     }
     for(int i=0;i<fragmentPair.size();i++){
-        string stringA2;
-        if(fragmentPair[i].posA+fragmentLengthTop<=stringA.length()){
-            if(fragmentPair[i].posA+fragmentLengthBottom/2-fragmentLengthTop>=0){
-               stringA2 = stringA.substr(fragmentPair[i].posA+fragmentLengthBottom/2-fragmentLengthTop,fragmentLengthTop*2-fragmentLengthBottom/2);
-            }else{
-                stringA2 = stringA.substr(0,fragmentLengthTop*2-fragmentLengthBottom/2);
-            }
-        }else{
-            if(fragmentPair[i].posA+fragmentLengthBottom/2-fragmentLengthTop>=0 ){
-                stringA2 = stringA.substr(fragmentPair[i].posA+fragmentLengthBottom/2-fragmentLengthTop,stringA.length()-fragmentPair[i].posA-fragmentLengthBottom/2+fragmentLengthTop);
-            }else{
-                stringA2 = stringA;
-            }
-        }
         string stringB2;
         if(fragmentPair[i].posB+fragmentLengthTop<=stringB.length()){
             if(fragmentPair[i].posB+fragmentLengthBottom/2-fragmentLengthTop>=0){
@@ -108,7 +95,7 @@ vector <string> DaemonWorker::GetCommonFragment(string stringA, string stringB,i
                 stringB2 = stringB;
             }
         }
-        vector <string> res = GetCommonFragmentEx(stringA2,stringB2,fragmentLengthBottom,fragmentLengthTop);
+        vector <string> res = GetCommonFragmentEx(stringA,stringB2,fragmentLengthBottom,fragmentLengthTop);
         for(int j=0;j<res.size();j++){
             stringResult.push_back(res[j]);
         }
@@ -119,10 +106,12 @@ vector <string> DaemonWorker::GetCommonFragment(string stringA, string stringB,i
 
 vector <string> DaemonWorker::GetCommonFragmentEx(string stringA, string stringB,int fragmentLengthBottom,int fragmentLengthTop){
     vector <string> result;
+
+    //QDebug(stringA);
     for(int j=fragmentLengthBottom;j<=fragmentLengthTop;j++){
-        for(int i=0;i<stringA.length()-j+1;i++){
-            string temp_str = stringA.substr(i,j);
-            if(stringB.find(temp_str)!=string::npos){
+        for(int i=0;i<stringB.length()-j+1;i++){
+            string temp_str = stringB.substr(i,j);
+            if(stringA.find(temp_str)!=string::npos){
                 result.push_back(temp_str);
             }else{
                 continue;
