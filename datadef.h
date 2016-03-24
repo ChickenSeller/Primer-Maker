@@ -58,6 +58,13 @@ class GenusCollection{
 public:
     vector <Genus> genus;
 };
+class FragmentPair{
+public:
+    string fragment;
+    int posA;
+    int posB;
+};
+
 #ifndef DATASTRUCT_H
 #define DATASTRUCT_H
 

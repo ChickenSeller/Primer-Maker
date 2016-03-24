@@ -11,6 +11,8 @@ public:
     GenusCollection LoadSourceGenus(string filePath);
     Genus GetGenus(string filePath);
     void trimStr(string& str);
+    vector <string> GetCommonFragment(string stringA,string stringB,int fragmentLengthBottom,int fragmentLengthTop);
+    vector <string> GetCommonFragmentEx(string stringA, string stringB,int fragmentLengthBottom,int fragmentLengthTop);
 };
 
 #endif // DAEMONWORKER_H
