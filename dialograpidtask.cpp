@@ -64,5 +64,14 @@ void DialogRapidTask::getConfig(){
     newstr<<config.paddingLength;
     newstr>>tempInt;
     ui->label_12->setText(QString::fromStdString(tempInt));
+    ui->lineEdit->setText(QString::fromStdString(config.targetGenus));
+    ui->lineEdit_2->setText(QString::fromStdString(config.sourceGenus));
 
+}
+
+void DialogRapidTask::on_pushButton_3_clicked()
+{
+    config.sourceGenus = ui->lineEdit_2->text().toStdString();
+    config.targetGenus = ui->lineEdit->text().toStdString();
+    accept();
 }

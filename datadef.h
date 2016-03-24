@@ -1,11 +1,11 @@
-#ifndef DATASTRUCT_H
-#define DATASTRUCT_H
 
-#endif // DATASTRUCT_H
 #include<iostream>
 #include<string>
 #include<QJsonObject>
+#include<vector>
+
 using namespace std;
+
 class Config{
 public:
     string targetGenus;
@@ -45,10 +45,24 @@ public:
         return json;
     }
 };
-#ifndef TEST1H
-#define TEST1H
+class Species{
+public:
+    std::string name;
+    std::string fragment;
+};
+class Genus{
+public:
+    vector <Species> species;
+};
+class GenusCollection{
+public:
+    vector <Genus> genus;
+};
+#ifndef DATASTRUCT_H
+#define DATASTRUCT_H
+
 extern Config config;
-#endif
+#endif // DATASTRUCT_H
 
 
 

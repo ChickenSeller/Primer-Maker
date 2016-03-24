@@ -1,13 +1,15 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <iostream>
-#include "datadef.h"
+//#include "datadef.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <fstream>
+#include <sstream>
 #include <QApplication>
 #include <QDir>
 #include "qmessagebox.h"
+#include "daemonworker.h"
 Config config;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -38,7 +40,39 @@ void MainWindow::on_action_4_triggered()
 void MainWindow::on_action_triggered()
 {
     Form_Rapid_Task = new DialogRapidTask();
-    Form_Rapid_Task->exec();
+    if(Form_Rapid_Task->exec() == QDialog::Accepted){
+        QDir *dir = new QDir(QString::fromStdString(config.sourceGenus));
+        QStringList filter;
+                //filter<<"*.dat";
+                //dir->setNameFilters(filter);
+        QList<QFileInfo> *fileInfo=new QList<QFileInfo>(dir->entryInfoList(filter));
+        stringstream newstr;
+        newstr<<fileInfo->count();
+        string tempInt;
+        newstr>>tempInt;
+        newstr.clear();
+        ui->lineEdit->setText(QString::fromStdString(tempInt));
+        DaemonWorker worker;
+        string s = "";
+        GenusCollection collection = worker.LoadSourceGenus(config.sourceGenus);
+        for(int i=0;i<collection.genus.size();i++){
+            Genus currentGenus = collection.genus[i];
+            for(int j=0;j<currentGenus.species.size();j++){
+                Species currentSpecies = currentGenus.species[j];
+                stringstream newstr;
+                string tempInt;
+                newstr<<currentGenus.species.size();
+                newstr>>tempInt;
+                s += currentSpecies.name +"\n";
+                //ui->plainTextEdit->setPlainText(QString::fromStdString(currentSpecies.name+ tempInt +"\n")+ui->plainTextEdit->toPlainText());
+            }
+        }
+        ui->plainTextEdit->setPlainText(QString::fromStdString(s));
+
+
+
+    }
+
 }
 
 void MainWindow::on_action_2_triggered()
