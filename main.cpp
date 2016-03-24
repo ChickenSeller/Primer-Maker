@@ -85,7 +85,7 @@ genus* load(string location){//读取目录下所有属文件
 		if(t1 -> first_species)
 			cout << "succeed in loading  " << file.name << endl;
 		else{
-			cout << "loading " << file.name << " error" << endl;
+			cout << "loading " << file.name << " error" << endl;//出错控制
 			cout << "ignore and continue?(y/n)";
 			char res;
 			cin >> res;
