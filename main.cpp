@@ -65,7 +65,15 @@ genus* load(string location){//读取目录下所有属文件
 		system("pause");
 		exit(-1);
 	}
+	int total_genus_num;
+	int current_num;
+	total_genus_num = current_num = 0;
 	_findnext(lf, &file);//去除第一个无效".."文件
+	while(_findnext(lf, &file) == 0){
+		total_genus_num++;
+	}
+	lf = _findfirst(location.c_str(), &file);
+	_findnext(lf, &file);
 	genus* head;
 	genus* t1;
 	genus* t2;
@@ -74,6 +82,8 @@ genus* load(string location){//读取目录下所有属文件
 	head = new genus;
 	t1 = head;
 	while(_findnext(lf, &file) == 0){//构建链表并分别进入每个文件
+		current_num++;
+		cout << current_num << "/" << total_genus_num << "    ";//进度表示
 		if(t1->name!=""){
 			t2 = new genus;
 			t1 -> next = t2;
@@ -85,7 +95,7 @@ genus* load(string location){//读取目录下所有属文件
 		if(t1 -> first_species)
 			cout << "succeed in loading  " << file.name << endl;
 		else{
-			cout << "loading " << file.name << " error" << endl;//出错控制
+			cout << "loading " << file.name << " error" << endl;
 			cout << "ignore and continue?(y/n)";
 			char res;
 			cin >> res;
@@ -135,13 +145,14 @@ void find(genus* root, genus* current_genus){
 	species* t1;
 	species* t2;
 	string temp;
-	int count_ok, count_fail, part, i;
+	int count_ok, count_fail, length, i;
 	head = current_genus -> first_species;
 	t1 = t2 = head;
 	while(t1 != NULL){
-		part = t1->code.length() / 10;
-		for(i = 0; i < part; i = i + 10){
-			temp = t1 -> code.substr(i, i + 10);
+		length = t1 -> code.length();
+		for(i = 0; i <= length - 20; i++){
+			temp = t1 -> code.substr(i, 20);
+			//cout << i << "/" << length << endl;//种内计数
 			count_ok = 0;
 			count_fail = 0;
 			t2 = head;
@@ -161,9 +172,10 @@ void find(genus* root, genus* current_genus){
 				t2 = t2 -> next;
 			}
 			if(count_ok >= num_need && check_other_genus(temp, root, current_genus) != 1){
-				cout << "found!" << endl;//次回作战始于处起
+				//cout << "found!" << endl;//次回作战始于处起
 			}
-		}t1 = t1 -> next;
+		}
+		t1 = t1 -> next;
 	}
 }
 
