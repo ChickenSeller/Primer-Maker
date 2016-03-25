@@ -7,7 +7,7 @@ DaemonWorker::DaemonWorker()
 
 }
 
-GenusCollection DaemonWorker::LoadSourceGenus(string filePath){
+GenusCollection DaemonWorker::LoadTargetGenus(string filePath,string targetFileName){
     if(filePath==""){
         throw "NULL_PATH";
     }
@@ -20,17 +20,66 @@ GenusCollection DaemonWorker::LoadSourceGenus(string filePath){
         throw "NULL_PATH";
     }
     GenusCollection currentCollection;
-    for(int i=2;i<fileInfo->count();i++){
-        Genus currentGenus = GetGenus(fileInfo->at(i).filePath().toStdString());
-        currentCollection.genus.push_back(currentGenus);
+    TargetGenusList targetGenusList=GetTargetGenusList(targetFileName);
+    for(int j=0;j<targetGenusList.genus.size();j++){
+        for(int i=2;i<fileInfo->count();i++){
+            if(fileInfo->at(i).fileName().toStdString()==targetGenusList.genus[j]){
+                Genus currentGenus = GetGenus(fileInfo->at(i).filePath().toStdString(),fileInfo->at(i).fileName().toStdString());
+                currentCollection.genus.push_back(currentGenus);
+                break;
+            }
+        }
     }
     return currentCollection;
 }
 
-Genus DaemonWorker::GetGenus(string filePath){
+SimpleGenusCollection DaemonWorker::LoadSimpleSourceGenus(string filePath){
+    if(filePath==""){
+        throw "NULL_PATH";
+    }
+    QDir *dir = new QDir(QString::fromStdString(filePath));
+    QStringList filter;
+            //filter<<"*.dat";
+            //dir->setNameFilters(filter);
+    QList<QFileInfo> *fileInfo=new QList<QFileInfo>(dir->entryInfoList(filter));
+    if(fileInfo->count()<=2){
+        throw "NULL_PATH";
+    }
+    SimpleGenusCollection currentCollection;
+    for(int i=2;i<fileInfo->count();i++){
+        ifstream sourceFile;
+        sourceFile.open(fileInfo->at(i).filePath().toStdString());
+        string fileContent;
+        string tempLine;
+        while(getline(sourceFile,tempLine)){
+            trimStr(tempLine);
+            fileContent +=tempLine;
+        }
+        Species tempSpecies;
+        tempSpecies.fragment = fileContent;
+        tempSpecies.name = fileInfo->at(i).fileName().toStdString();
+        currentCollection.genus.push_back(tempSpecies);
+    }
+    return currentCollection;
+}
+
+TargetGenusList DaemonWorker::GetTargetGenusList(string filename){
+    ifstream targetFile;
+    targetFile.open(filename);
+    TargetGenusList res;
+    string tempLine;
+    while(getline(targetFile,tempLine)){
+        trimStr(tempLine);
+        res.genus.push_back(tempLine+".fa");
+    }
+    return res;
+}
+
+Genus DaemonWorker::GetGenus(string filePath,string fileName){
     Genus currentGenus;
     Species currentSpecies;
     ifstream genusFile;
+    currentGenus.name = fileName;
     genusFile.open(filePath);
     string tempLine;
         while(getline(genusFile,tempLine))
@@ -57,6 +106,8 @@ void DaemonWorker::trimStr(string &str){
     str.assign(buff.begin() + buff.find_first_not_of(space),
     buff.begin() + buff.find_last_not_of(space) + 1);
 }
+
+//vector <string> DaemonWorker
 
 vector <string> DaemonWorker::GetCommonFragment(string stringA, string stringB,int fragmentLengthBottom,int fragmentLengthTop){
     vector <string> stringArray;
@@ -119,4 +170,55 @@ vector <string> DaemonWorker::GetCommonFragmentEx(string stringA, string stringB
         }
     }
     return result;
+}
+
+void DaemonWorker::test(){
+    QDir *dir = new QDir(QString::fromStdString(config.sourceGenus));
+    QStringList filter;
+            //filter<<"*.dat";
+            //dir->setNameFilters(filter);
+    QList<QFileInfo> *fileInfo=new QList<QFileInfo>(dir->entryInfoList(filter));
+    stringstream newstr;
+    newstr<<fileInfo->count();
+    string tempInt;
+    newstr>>tempInt;
+    newstr.clear();
+    //ui->lineEdit->setText(QString::fromStdString(tempInt));
+    string s = "";
+    GenusCollection collection = LoadTargetGenus(config.sourceGenus,config.targetGenus);
+    /*
+    for(int i=0;i<collection.genus.size();i++){
+        Genus currentGenus = collection.genus[i];
+        for(int j=0;j<currentGenus.species.size();j++){
+            Species currentSpecies = currentGenus.species[j];
+            stringstream newstr;
+            string tempInt;
+            newstr<<currentGenus.species.size();
+            newstr>>tempInt;
+            s += currentSpecies.name +"\n";
+            //ui->plainTextEdit->setPlainText(QString::fromStdString(currentSpecies.name+ tempInt +"\n")+ui->plainTextEdit->toPlainText());
+        }
+    }
+    */
+    Genus currentGenus = collection.genus[2];
+    newstr<<currentGenus.species.size();
+    newstr>>tempInt;
+    newstr.clear();
+    //ui->plainTextEdit->setPlainText(QString::fromStdString(currentGenus.species[3].name+"\n"+currentGenus.species[3].fragment));
+    //SimpleGenusCollection sourceGnenus = worker.LoadSimpleSourceGenus(config.sourceGenus);
+    //ui->plainTextEdit->setPlainText(QString::fromStdString(sourceGnenus.genus[1].name+"\n"+sourceGnenus.genus[1].fragment));
+
+    Species currentSpecies = currentGenus.species[3];
+    vector <string> CommonFragment = GetCommonFragment(currentSpecies.fragment,currentGenus.species[4].fragment,config.fragmentLengthBottom,config.fragmentLengthTop);
+    for(int i=0;i<CommonFragment.size();i++){
+        s+=CommonFragment[i]+"\n";
+        timer +=1;
+        //ui->plainTextEdit->setPlainText(QString::fromStdString(CommonFragment[i]+"\n")+ui->plainTextEdit->toPlainText());
+        //QApplication::processEvents();
+    }
+    //ui->plainTextEdit->setPlainText(QString::fromStdString(s));
+    newstr<<CommonFragment.size();
+    newstr>>tempInt;
+    //ui->plainTextEdit->setPlainText(QString::fromStdString(currentSpecies.fragment+"\n\n"+currentGenus.species[2].fragment));
+
 }

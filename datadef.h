@@ -52,6 +52,7 @@ public:
 };
 class Genus{
 public:
+    std::string name;
     vector <Species> species;
 };
 class GenusCollection{
@@ -68,10 +69,18 @@ class GenusList{
 public:
     vector <Species> genus;
 };
+class TargetGenusList{
+public:
+    vector <string> genus;
+};
+class SimpleGenusCollection{
+public:
+    vector <Species> genus;
+};
 
 #ifndef DATASTRUCT_H
 #define DATASTRUCT_H
-
+extern int timer;
 extern Config config;
 #endif // DATASTRUCT_H
 

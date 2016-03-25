@@ -11,6 +11,7 @@
 #include "qmessagebox.h"
 #include "daemonworker.h"
 Config config;
+int timer;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -41,47 +42,13 @@ void MainWindow::on_action_triggered()
 {
     Form_Rapid_Task = new DialogRapidTask();
     if(Form_Rapid_Task->exec() == QDialog::Accepted){
-        QDir *dir = new QDir(QString::fromStdString(config.sourceGenus));
-        QStringList filter;
-                //filter<<"*.dat";
-                //dir->setNameFilters(filter);
-        QList<QFileInfo> *fileInfo=new QList<QFileInfo>(dir->entryInfoList(filter));
-        stringstream newstr;
-        newstr<<fileInfo->count();
-        string tempInt;
-        newstr>>tempInt;
-        newstr.clear();
-        ui->lineEdit->setText(QString::fromStdString(tempInt));
         DaemonWorker worker;
-        string s = "";
-        GenusCollection collection = worker.LoadSourceGenus(config.sourceGenus);
-        /*
-        for(int i=0;i<collection.genus.size();i++){
-            Genus currentGenus = collection.genus[i];
-            for(int j=0;j<currentGenus.species.size();j++){
-                Species currentSpecies = currentGenus.species[j];
-                stringstream newstr;
-                string tempInt;
-                newstr<<currentGenus.species.size();
-                newstr>>tempInt;
-                s += currentSpecies.name +"\n";
-                //ui->plainTextEdit->setPlainText(QString::fromStdString(currentSpecies.name+ tempInt +"\n")+ui->plainTextEdit->toPlainText());
-            }
-        }
-        */
-        Genus currentGenus = collection.genus[1];
-        Species currentSpecies = currentGenus.species[3];
-        vector <string> CommonFragment = worker.GetCommonFragment(currentSpecies.fragment,currentGenus.species[4].fragment,config.fragmentLengthBottom,config.fragmentLengthTop);
-        for(int i=0;i<CommonFragment.size();i++){
-            s+=CommonFragment[i]+"\n";
-        }
-        ui->plainTextEdit->setPlainText(QString::fromStdString(s));
-        newstr<<CommonFragment.size();
+        worker.test();
+        stringstream newstr;
+        string tempInt;
+        newstr<<timer;
         newstr>>tempInt;
-        //ui->plainTextEdit->setPlainText(QString::fromStdString(currentSpecies.fragment+"\n\n"+currentGenus.species[2].fragment));
-
-
-
+        ui->plainTextEdit->setPlainText(QString::fromStdString(tempInt));
     }
 
 }
