@@ -48,7 +48,7 @@ SimpleGenusCollection DaemonWorker::LoadSimpleSourceGenus(string filePath){
     SimpleGenusCollection currentCollection;
     for(int i=2;i<fileInfo->count();i++){
         ifstream sourceFile;
-        sourceFile.open(fileInfo->at(i).filePath().toStdString());
+        sourceFile.open(fileInfo->at(i).filePath().toStdString().c_str());
         string fileContent;
         string tempLine;
         while(getline(sourceFile,tempLine)){
@@ -65,7 +65,7 @@ SimpleGenusCollection DaemonWorker::LoadSimpleSourceGenus(string filePath){
 
 TargetGenusList DaemonWorker::GetTargetGenusList(string filename){
     ifstream targetFile;
-    targetFile.open(filename);
+    targetFile.open(filename.c_str());
     TargetGenusList res;
     string tempLine;
     while(getline(targetFile,tempLine)){
@@ -80,7 +80,7 @@ Genus DaemonWorker::GetGenus(string filePath,string fileName){
     Species currentSpecies;
     ifstream genusFile;
     currentGenus.name = fileName;
-    genusFile.open(filePath);
+    genusFile.open(filePath.c_str());
     string tempLine;
         while(getline(genusFile,tempLine))
         {

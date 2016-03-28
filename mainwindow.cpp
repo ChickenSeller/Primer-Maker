@@ -81,7 +81,7 @@ void MainWindow::SaveConfig(){
     QString json_str(byte_array);
     ofstream ofile;
     QString configPath = QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/config.json"));
-    ofile.open(configPath.toStdString());
+    ofile.open(configPath.toStdString().c_str());
     ofile << json_str.toStdString();
     ofile.close();
 }
@@ -97,14 +97,14 @@ void MainWindow::test(){
     config.sourceGenus = "modified";
     config.targetGenus = "test";
     ui->lineEdit->setText(QString::fromStdString(config.sourceGenus));
-    ofile.open(configPath.toStdString());
+    ofile.open(configPath.toStdString().c_str());
     ofile << json_str.toStdString();
     ofile.close();
 }
 void MainWindow::LoadConfig(){
     ifstream ifile;
     QString configPath = QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/config.json"));
-    ifile.open(configPath.toStdString());
+    ifile.open(configPath.toStdString().c_str());
     string json;
     ifile>>json;
     ifile.close();
