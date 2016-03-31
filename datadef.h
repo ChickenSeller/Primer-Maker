@@ -77,6 +77,11 @@ class SimpleGenusCollection{
 public:
     vector <Species> genus;
 };
+class CommonFragment{
+public:
+    string name;
+    vector <string> fragments;
+};
 
 #ifndef DATASTRUCT_H
 #define DATASTRUCT_H

@@ -180,9 +180,28 @@ vector <string> DaemonWorker::Unique(vector<string> rawString){
     return rawString;
 }
 
+vector <CommonFragment> DaemonWorker::GetCommonFragmentFromGenus(GenusCollection targetGenus, SimpleGenusCollection sourceGenus, int coverage){
+    vector <CommonFragment> commonFragments;
+    for(int i=0;i<targetGenus.genus.size();i++){
+        CommonFragment tempFragment;
+        tempFragment.name = targetGenus.genus[i].name;
+        if(targetGenus.genus[i].species.size()<2){
+            if(targetGenus.genus[i].species.size()==1){
+                targetGenus.genus[i].species.push_back(targetGenus.genus[i].species[0]);
+            }else{
+                continue;
+            }
+        }
+        tempFragment.fragments = GetCommonFragmentFromSpecificGenus(targetGenus.genus[i],sourceGenus,coverage);
+        commonFragments.push_back(tempFragment);
+    }
+    return commonFragments;
+}
+
 vector <string> DaemonWorker::GetCommonFragmentFromSpecificGenus(Genus genus, SimpleGenusCollection sourceGenus, int coverage){
     vector <string> rawCommonFragment;
     vector <string> commonFragment;
+
     for(int i=0;i<genus.species.size();i++){
         for(int j=i;j<genus.species.size();j++){
             vector <string> tempCommonFragment = GetCommonFragment(genus.species[i].fragment,genus.species[j].fragment,config.fragmentLengthBottom,config.fragmentLengthTop);
@@ -232,53 +251,3 @@ bool DaemonWorker::IfSpecific(string fragment, SimpleGenusCollection sourceGenus
     return true;
 }
 
-void DaemonWorker::test(){
-    QDir *dir = new QDir(QString::fromStdString(config.sourceGenus));
-    QStringList filter;
-            //filter<<"*.dat";
-            //dir->setNameFilters(filter);
-    QList<QFileInfo> *fileInfo=new QList<QFileInfo>(dir->entryInfoList(filter));
-    stringstream newstr;
-    newstr<<fileInfo->count();
-    string tempInt;
-    newstr>>tempInt;
-    newstr.clear();
-    //ui->lineEdit->setText(QString::fromStdString(tempInt));
-    string s = "";
-    GenusCollection collection = LoadTargetGenus(config.sourceGenus,config.targetGenus);
-    /*
-    for(int i=0;i<collection.genus.size();i++){
-        Genus currentGenus = collection.genus[i];
-        for(int j=0;j<currentGenus.species.size();j++){
-            Species currentSpecies = currentGenus.species[j];
-            stringstream newstr;
-            string tempInt;
-            newstr<<currentGenus.species.size();
-            newstr>>tempInt;
-            s += currentSpecies.name +"\n";
-            //ui->plainTextEdit->setPlainText(QString::fromStdString(currentSpecies.name+ tempInt +"\n")+ui->plainTextEdit->toPlainText());
-        }
-    }
-    */
-    Genus currentGenus = collection.genus[2];
-    newstr<<currentGenus.species.size();
-    newstr>>tempInt;
-    newstr.clear();
-    //ui->plainTextEdit->setPlainText(QString::fromStdString(currentGenus.species[3].name+"\n"+currentGenus.species[3].fragment));
-    //SimpleGenusCollection sourceGnenus = worker.LoadSimpleSourceGenus(config.sourceGenus);
-    //ui->plainTextEdit->setPlainText(QString::fromStdString(sourceGnenus.genus[1].name+"\n"+sourceGnenus.genus[1].fragment));
-
-    Species currentSpecies = currentGenus.species[3];
-    vector <string> CommonFragment = GetCommonFragment(currentSpecies.fragment,currentGenus.species[4].fragment,config.fragmentLengthBottom,config.fragmentLengthTop);
-    for(int i=0;i<CommonFragment.size();i++){
-        s+=CommonFragment[i]+"\n";
-        timer +=1;
-        //ui->plainTextEdit->setPlainText(QString::fromStdString(CommonFragment[i]+"\n")+ui->plainTextEdit->toPlainText());
-        //QApplication::processEvents();
-    }
-    //ui->plainTextEdit->setPlainText(QString::fromStdString(s));
-    newstr<<CommonFragment.size();
-    newstr>>tempInt;
-    //ui->plainTextEdit->setPlainText(QString::fromStdString(currentSpecies.fragment+"\n\n"+currentGenus.species[2].fragment));
-
-}

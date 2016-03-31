@@ -185,6 +185,8 @@ void MainWindow::test(){
         }
     }
     */
+    ui->lineEdit->setText(QString::fromStdString("Computing"));
+    QApplication::processEvents();
     Genus currentGenus = collection.genus[2];
     newstr<<currentGenus.species.size();
     newstr>>tempInt;
@@ -193,15 +195,23 @@ void MainWindow::test(){
     //SimpleGenusCollection sourceGnenus = worker.LoadSimpleSourceGenus(config.sourceGenus);
     //ui->plainTextEdit->setPlainText(QString::fromStdString(sourceGnenus.genus[1].name+"\n"+sourceGnenus.genus[1].fragment));
     SimpleGenusCollection x = worker.LoadSimpleSourceGenus(config.sourceGenus);
-    Species currentSpecies = currentGenus.species[3];
-    vector <string> CommonFragment = worker.GetCommonFragmentFromSpecificGenus(currentGenus,x,config.fragmentCoverage); //GetCommonFragment(currentSpecies.fragment,currentGenus.species[4].fragment,config.fragmentLengthBottom,config.fragmentLengthTop);
-
+    vector <CommonFragment> CommonFragment = worker.GetCommonFragmentFromGenus(collection,x,config.fragmentCoverage);
+    //vector <string> CommonFragment = worker.GetCommonFragmentFromSpecificGenus(currentGenus,x,config.fragmentCoverage); //GetCommonFragment(currentSpecies.fragment,currentGenus.species[4].fragment,config.fragmentLengthBottom,config.fragmentLengthTop);
+    ui->lineEdit->setText(QString::fromStdString("Rendering"));
+    QApplication::processEvents();
     for(int i=0;i<CommonFragment.size();i++){
-        s+=CommonFragment[i]+"\n";
+        vector <string> tempString = CommonFragment[i].fragments;
+        s+=CommonFragment[i].name+"\n";
+        for(int j=0;j<tempString.size();j++){
+            s+=tempString[j]+"\n";
+        }
+        //s+=CommonFragment[i]+"\n";
         //timer +=1;
         //ui->plainTextEdit->setPlainText(QString::fromStdString(CommonFragment[i]+"\n")+ui->plainTextEdit->toPlainText());
         //QApplication::processEvents();
     }
+    ui->lineEdit->setText(QString::fromStdString("Success"));
+    QApplication::processEvents();
     ui->plainTextEdit->setPlainText(QString::fromStdString(s));
     newstr<<CommonFragment.size();
     newstr>>tempInt;
