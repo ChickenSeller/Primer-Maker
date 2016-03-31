@@ -21,6 +21,24 @@ MainWindow::MainWindow(QWidget *parent) :
     LoadConfig();
     //config.sourceGenus = "text";
     //ui->lineEdit->setText(QString::fromStdString(config.sourceGenus));
+    DaemonWorker worker1;
+    vector <string> temp;
+    temp.push_back("text1");
+    temp.push_back("text2");
+    temp.push_back("text1");
+    temp.push_back("text4");
+    temp.push_back("text5");
+    temp.push_back("text1");
+    temp.push_back("text7");
+    temp.push_back("text8");
+    temp.push_back("text1");
+    temp.push_back("text10");
+    temp.push_back("text11");
+    temp.push_back("text8");
+    vector <string> x = worker1.Unique(temp);
+    for(int i=0;i<x.size();i++){
+        ui->plainTextEdit->setPlainText(QString::fromStdString(x[i]+"\n")+ui->plainTextEdit->toPlainText());
+    }
 
 }
 
@@ -42,13 +60,13 @@ void MainWindow::on_action_triggered()
 {
     Form_Rapid_Task = new DialogRapidTask();
     if(Form_Rapid_Task->exec() == QDialog::Accepted){
-        DaemonWorker worker;
-        worker.test();
+        //DaemonWorker worker;
+        test();
         stringstream newstr;
         string tempInt;
         newstr<<timer;
         newstr>>tempInt;
-        ui->plainTextEdit->setPlainText(QString::fromStdString(tempInt));
+        ui->plainTextEdit->setPlainText(QString::fromStdString(tempInt+"\n")+ui->plainTextEdit->toPlainText());
     }
 
 }
@@ -61,7 +79,7 @@ void MainWindow::on_action_2_triggered()
         if(Form_Custom_Task_Fragment->exec() == QDialog::Accepted){
             Form_Custom_Task_Pair = new DialogCustomTask_Pair();
             if(Form_Custom_Task_Pair->exec() == QDialog::Accepted){
-                test();
+                SaveConfig();
             }
         }
 
@@ -85,22 +103,7 @@ void MainWindow::SaveConfig(){
     ofile << json_str.toStdString();
     ofile.close();
 }
-void MainWindow::test(){
-    Config MainConfig;
-    QJsonObject json = JsonConvert::ConfigToJson(MainConfig);
-    QJsonDocument document;
-    document.setObject(json);
-    QByteArray byte_array = document.toJson(QJsonDocument::Compact);
-    QString json_str(byte_array);
-    ofstream ofile;
-    QString configPath = QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/config.json"));
-    config.sourceGenus = "modified";
-    config.targetGenus = "test";
-    ui->lineEdit->setText(QString::fromStdString(config.sourceGenus));
-    ofile.open(configPath.toStdString().c_str());
-    ofile << json_str.toStdString();
-    ofile.close();
-}
+
 void MainWindow::LoadConfig(){
     ifstream ifile;
     QString configPath = QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/config.json"));
@@ -152,3 +155,57 @@ void MainWindow::LoadConfig(){
 
     ui->lineEdit->setText(QString::fromStdString(json));
 }
+
+void MainWindow::test(){
+    QDir *dir = new QDir(QString::fromStdString(config.sourceGenus));
+    DaemonWorker worker;
+    QStringList filter;
+            //filter<<"*.dat";
+            //dir->setNameFilters(filter);
+    QList<QFileInfo> *fileInfo=new QList<QFileInfo>(dir->entryInfoList(filter));
+    stringstream newstr;
+    newstr<<fileInfo->count();
+    string tempInt;
+    newstr>>tempInt;
+    newstr.clear();
+    //ui->lineEdit->setText(QString::fromStdString(tempInt));
+    string s = "";
+    GenusCollection collection = worker.LoadTargetGenus(config.sourceGenus,config.targetGenus);
+    /*
+    for(int i=0;i<collection.genus.size();i++){
+        Genus currentGenus = collection.genus[i];
+        for(int j=0;j<currentGenus.species.size();j++){
+            Species currentSpecies = currentGenus.species[j];
+            stringstream newstr;
+            string tempInt;
+            newstr<<currentGenus.species.size();
+            newstr>>tempInt;
+            s += currentSpecies.name +"\n";
+            //ui->plainTextEdit->setPlainText(QString::fromStdString(currentSpecies.name+ tempInt +"\n")+ui->plainTextEdit->toPlainText());
+        }
+    }
+    */
+    Genus currentGenus = collection.genus[2];
+    newstr<<currentGenus.species.size();
+    newstr>>tempInt;
+    newstr.clear();
+    //ui->plainTextEdit->setPlainText(QString::fromStdString(currentGenus.species[3].name+"\n"+currentGenus.species[3].fragment));
+    //SimpleGenusCollection sourceGnenus = worker.LoadSimpleSourceGenus(config.sourceGenus);
+    //ui->plainTextEdit->setPlainText(QString::fromStdString(sourceGnenus.genus[1].name+"\n"+sourceGnenus.genus[1].fragment));
+    SimpleGenusCollection x = worker.LoadSimpleSourceGenus(config.sourceGenus);
+    Species currentSpecies = currentGenus.species[3];
+    vector <string> CommonFragment = worker.GetCommonFragmentFromSpecificGenus(currentGenus,x,config.fragmentCoverage); //GetCommonFragment(currentSpecies.fragment,currentGenus.species[4].fragment,config.fragmentLengthBottom,config.fragmentLengthTop);
+
+    for(int i=0;i<CommonFragment.size();i++){
+        s+=CommonFragment[i]+"\n";
+        //timer +=1;
+        //ui->plainTextEdit->setPlainText(QString::fromStdString(CommonFragment[i]+"\n")+ui->plainTextEdit->toPlainText());
+        //QApplication::processEvents();
+    }
+    ui->plainTextEdit->setPlainText(QString::fromStdString(s));
+    newstr<<CommonFragment.size();
+    newstr>>tempInt;
+    //ui->plainTextEdit->setPlainText(QString::fromStdString(currentSpecies.fragment+"\n\n"+currentGenus.species[2].fragment));
+
+}
+

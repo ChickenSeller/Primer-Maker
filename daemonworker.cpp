@@ -151,7 +151,7 @@ vector <string> DaemonWorker::GetCommonFragment(string stringA, string stringB,i
             stringResult.push_back(res[j]);
         }
     }
-    return stringResult;
+    return Unique(stringResult);
 
 }
 
@@ -170,6 +170,66 @@ vector <string> DaemonWorker::GetCommonFragmentEx(string stringA, string stringB
         }
     }
     return result;
+}
+
+vector <string> DaemonWorker::Unique(vector<string> rawString){
+    vector<string>::iterator newIterater;
+    sort(rawString.begin(),rawString.end());
+    newIterater = unique(rawString.begin(),rawString.end());
+    rawString.erase(newIterater,rawString.end());
+    return rawString;
+}
+
+vector <string> DaemonWorker::GetCommonFragmentFromSpecificGenus(Genus genus, SimpleGenusCollection sourceGenus, int coverage){
+    vector <string> rawCommonFragment;
+    vector <string> commonFragment;
+    for(int i=0;i<genus.species.size();i++){
+        for(int j=i;j<genus.species.size();j++){
+            vector <string> tempCommonFragment = GetCommonFragment(genus.species[i].fragment,genus.species[j].fragment,config.fragmentLengthBottom,config.fragmentLengthTop);
+            rawCommonFragment.insert(rawCommonFragment.end(),tempCommonFragment.begin(),tempCommonFragment.end());
+        }
+    }
+    rawCommonFragment = Unique(rawCommonFragment);
+    for(int i=0;i<rawCommonFragment.size();i++){
+        if(GetCoverage(rawCommonFragment[i],genus)>=coverage){
+            commonFragment.push_back(rawCommonFragment[i]);
+        }
+    }
+    rawCommonFragment.clear();
+    for(int i=0;i<commonFragment.size();i++){
+
+        if(IfSpecific(commonFragment[i],sourceGenus,genus)){
+            rawCommonFragment.push_back(commonFragment[i]);
+        }
+    }
+    return Unique(rawCommonFragment);
+}
+
+int DaemonWorker::GetCoverage(string fragment, Genus genus){
+    int hit=0;
+    for(int i=0;i<genus.species.size();i++){
+        if(genus.species[i].fragment.find(fragment)!=string::npos){
+            hit++;
+            //timer++;
+        }
+    }
+    //timer = hit*100/genus.species.size();
+    return hit*100/genus.species.size();
+}
+
+bool DaemonWorker::IfSpecific(string fragment, SimpleGenusCollection sourceGenus,Genus targetGenus){
+    for(int i=0;i<sourceGenus.genus.size();i++){
+       if(sourceGenus.genus[i].name == targetGenus.name){
+            continue;
+       }
+       if(sourceGenus.genus[i].fragment.find(fragment)!=string::npos){
+            //timer++;
+            return false;
+
+        }
+    }
+    timer++;
+    return true;
 }
 
 void DaemonWorker::test(){
