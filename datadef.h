@@ -64,6 +64,9 @@ public:
     string fragment;
     int posA;
     int posB;
+    bool operator <(const FragmentPair &a){
+        return posA<a.posA;
+    }
 };
 class GenusList{
 public:
@@ -81,6 +84,30 @@ class CommonFragment{
 public:
     string name;
     vector <string> fragments;
+};
+class PairInfo{
+public:
+    int pos1;
+    int length1;
+    int pos2;
+    int length2;
+    PairInfo(int a,int b,int c,int d){
+            pos1 = a;
+            length1 = b;
+            pos2 = c;
+            length2 = d;
+        }
+};
+class PrimerPair{
+public:
+    string primerA;
+    int posA;
+    string primerB;
+    int posB;
+};
+class GenusPrimerPair{
+    string name;
+    vector <PrimerPair> pairs;
 };
 
 #ifndef DATASTRUCT_H

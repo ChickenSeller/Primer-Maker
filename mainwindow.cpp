@@ -10,6 +10,8 @@
 #include <QDir>
 #include "qmessagebox.h"
 #include "daemonworker.h"
+#include <QTime>
+
 Config config;
 int timer;
 MainWindow::MainWindow(QWidget *parent) :
@@ -157,6 +159,8 @@ void MainWindow::LoadConfig(){
 }
 
 void MainWindow::test(){
+    QTime time;
+    time.start();
     QDir *dir = new QDir(QString::fromStdString(config.sourceGenus));
     DaemonWorker worker;
     QStringList filter;
@@ -187,10 +191,6 @@ void MainWindow::test(){
     */
     ui->lineEdit->setText(QString::fromStdString("Computing"));
     QApplication::processEvents();
-    Genus currentGenus = collection.genus[2];
-    newstr<<currentGenus.species.size();
-    newstr>>tempInt;
-    newstr.clear();
     //ui->plainTextEdit->setPlainText(QString::fromStdString(currentGenus.species[3].name+"\n"+currentGenus.species[3].fragment));
     //SimpleGenusCollection sourceGnenus = worker.LoadSimpleSourceGenus(config.sourceGenus);
     //ui->plainTextEdit->setPlainText(QString::fromStdString(sourceGnenus.genus[1].name+"\n"+sourceGnenus.genus[1].fragment));
@@ -198,7 +198,13 @@ void MainWindow::test(){
     vector <CommonFragment> CommonFragment = worker.GetCommonFragmentFromGenus(collection,x,config.fragmentCoverage);
     //vector <string> CommonFragment = worker.GetCommonFragmentFromSpecificGenus(currentGenus,x,config.fragmentCoverage); //GetCommonFragment(currentSpecies.fragment,currentGenus.species[4].fragment,config.fragmentLengthBottom,config.fragmentLengthTop);
     ui->lineEdit->setText(QString::fromStdString("Rendering"));
+    long t =time.elapsed();
+    newstr<<t;
+    newstr>>tempInt;
+    newstr.clear();
+    ui->lineEdit->setText(QString::fromStdString(tempInt+"ms"));
     QApplication::processEvents();
+
     for(int i=0;i<CommonFragment.size();i++){
         vector <string> tempString = CommonFragment[i].fragments;
         s+=CommonFragment[i].name+"\n";
@@ -210,11 +216,14 @@ void MainWindow::test(){
         //ui->plainTextEdit->setPlainText(QString::fromStdString(CommonFragment[i]+"\n")+ui->plainTextEdit->toPlainText());
         //QApplication::processEvents();
     }
-    ui->lineEdit->setText(QString::fromStdString("Success"));
-    QApplication::processEvents();
+
+    //ui->lineEdit->setText(QString::fromStdString("Success"));
+
     ui->plainTextEdit->setPlainText(QString::fromStdString(s));
+    QApplication::processEvents();
     newstr<<CommonFragment.size();
     newstr>>tempInt;
+    //worker.GetFragmentPosFromSpecificGenus()
     //ui->plainTextEdit->setPlainText(QString::fromStdString(currentSpecies.fragment+"\n\n"+currentGenus.species[2].fragment));
 
 }

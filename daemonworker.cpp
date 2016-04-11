@@ -6,8 +6,8 @@ DaemonWorker::DaemonWorker()
 {
 
 }
-
-GenusCollection DaemonWorker::LoadTargetGenus(string filePath,string targetFileName){
+//加载目标属
+GenusCollection DaemonWorker::LoadTargetGenus(string filePath,string targetFileName){//filepath==环境属文件夹 target==目标属文件路径
     if(filePath==""){
         throw "NULL_PATH";
     }
@@ -32,7 +32,7 @@ GenusCollection DaemonWorker::LoadTargetGenus(string filePath,string targetFileN
     }
     return currentCollection;
 }
-
+//加载环境属
 SimpleGenusCollection DaemonWorker::LoadSimpleSourceGenus(string filePath){
     if(filePath==""){
         throw "NULL_PATH";
@@ -62,7 +62,7 @@ SimpleGenusCollection DaemonWorker::LoadSimpleSourceGenus(string filePath){
     }
     return currentCollection;
 }
-
+//加载目标属文件名列表
 TargetGenusList DaemonWorker::GetTargetGenusList(string filename){
     ifstream targetFile;
     targetFile.open(filename.c_str());
@@ -74,7 +74,7 @@ TargetGenusList DaemonWorker::GetTargetGenusList(string filename){
     }
     return res;
 }
-
+//按照属名加载特定属
 Genus DaemonWorker::GetGenus(string filePath,string fileName){
     Genus currentGenus;
     Species currentSpecies;
@@ -99,16 +99,14 @@ Genus DaemonWorker::GetGenus(string filePath,string fileName){
         currentGenus.species.push_back(currentSpecies);
         return currentGenus;
 }
-
+//去除首尾空格
 void DaemonWorker::trimStr(string &str){
     string buff(str);
     char space = ' ';
     str.assign(buff.begin() + buff.find_first_not_of(space),
     buff.begin() + buff.find_last_not_of(space) + 1);
 }
-
-//vector <string> DaemonWorker
-
+//匹配指定两个种的公共子串
 vector <string> DaemonWorker::GetCommonFragment(string stringA, string stringB,int fragmentLengthBottom,int fragmentLengthTop){
     vector <string> stringArray;
     vector <FragmentPair> fragmentPair;
@@ -154,7 +152,7 @@ vector <string> DaemonWorker::GetCommonFragment(string stringA, string stringB,i
     return Unique(stringResult);
 
 }
-
+//简单匹配公共字符串
 vector <string> DaemonWorker::GetCommonFragmentEx(string stringA, string stringB,int fragmentLengthBottom,int fragmentLengthTop){
     vector <string> result;
 
@@ -171,7 +169,7 @@ vector <string> DaemonWorker::GetCommonFragmentEx(string stringA, string stringB
     }
     return result;
 }
-
+//字符串去重
 vector <string> DaemonWorker::Unique(vector<string> rawString){
     vector<string>::iterator newIterater;
     sort(rawString.begin(),rawString.end());
@@ -179,7 +177,7 @@ vector <string> DaemonWorker::Unique(vector<string> rawString){
     rawString.erase(newIterater,rawString.end());
     return rawString;
 }
-
+//获取所有目标属特征片段
 vector <CommonFragment> DaemonWorker::GetCommonFragmentFromGenus(GenusCollection targetGenus, SimpleGenusCollection sourceGenus, int coverage){
     vector <CommonFragment> commonFragments;
     for(int i=0;i<targetGenus.genus.size();i++){
@@ -197,7 +195,7 @@ vector <CommonFragment> DaemonWorker::GetCommonFragmentFromGenus(GenusCollection
     }
     return commonFragments;
 }
-
+//获取指定属特征片段
 vector <string> DaemonWorker::GetCommonFragmentFromSpecificGenus(Genus genus, SimpleGenusCollection sourceGenus, int coverage){
     vector <string> rawCommonFragment;
     vector <string> commonFragment;
@@ -209,11 +207,16 @@ vector <string> DaemonWorker::GetCommonFragmentFromSpecificGenus(Genus genus, Si
         }
     }
     rawCommonFragment = Unique(rawCommonFragment);
+
     for(int i=0;i<rawCommonFragment.size();i++){
+        commonFragment.push_back(rawCommonFragment[i]);
+
         if(GetCoverage(rawCommonFragment[i],genus)>=coverage){
             commonFragment.push_back(rawCommonFragment[i]);
         }
+
     }
+
     rawCommonFragment.clear();
     for(int i=0;i<commonFragment.size();i++){
 
@@ -221,9 +224,10 @@ vector <string> DaemonWorker::GetCommonFragmentFromSpecificGenus(Genus genus, Si
             rawCommonFragment.push_back(commonFragment[i]);
         }
     }
+
     return Unique(rawCommonFragment);
 }
-
+//计算片段覆盖率
 int DaemonWorker::GetCoverage(string fragment, Genus genus){
     int hit=0;
     for(int i=0;i<genus.species.size();i++){
@@ -235,7 +239,7 @@ int DaemonWorker::GetCoverage(string fragment, Genus genus){
     //timer = hit*100/genus.species.size();
     return hit*100/genus.species.size();
 }
-
+//判定是否为特征片段，属外查找
 bool DaemonWorker::IfSpecific(string fragment, SimpleGenusCollection sourceGenus,Genus targetGenus){
     for(int i=0;i<sourceGenus.genus.size();i++){
        if(sourceGenus.genus[i].name == targetGenus.name){
@@ -244,10 +248,51 @@ bool DaemonWorker::IfSpecific(string fragment, SimpleGenusCollection sourceGenus
        if(sourceGenus.genus[i].fragment.find(fragment)!=string::npos){
             //timer++;
             return false;
-
         }
     }
     timer++;
     return true;
 }
-
+//获取指定属的特征片段位置
+vector <FragmentPair> DaemonWorker::GetFragmentPosFromSpecificGenus(string species, vector<string> fragments){
+    vector <FragmentPair> result;
+    for(int i=0;i<fragments.size();i++){
+        size_t pos = species.find(fragments[i]);
+        if(pos==string::npos){
+            continue;
+        }
+        FragmentPair temp;
+        temp.fragment=fragments[i];
+        temp.posA = pos;
+        temp.posB = fragments[i].length();
+        result.push_back(temp);
+    }
+    sort(result.begin(),result.end());
+    return result;
+}
+//获取引物对位置
+vector <PairInfo> DaemonWorker::Pair(vector<FragmentPair> in, int MIN, int MAX){
+    int num;
+        num = in.capacity();
+        vector<PairInfo> ans;
+        int i, j;
+        int t1, t2;
+        t1 = t2 = 0;
+        for(i = 0; i <= num - 2; i++){
+            while(in[t1].posA < in[i].posA + MIN){
+                t1++;
+                if(t1 >= num - 1)return ans;
+            }
+            if(t2 < t1)t2 = t1;
+            while(in[t2+1].posA < in[i].posA + MAX){
+                t2++;
+                if(t2 >= 9)break;
+            }
+            for(j = t1; j <= t2; j++){
+                ans.push_back(PairInfo(in[i].posA, in[i].posB, in[j].posA, in[j].posB));
+                cout << in[i].posA << ' ' << in[j].posA <<endl;
+            }
+        }
+        return ans;
+}
+//
