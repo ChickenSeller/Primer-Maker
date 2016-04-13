@@ -226,7 +226,7 @@ void MainWindow::test(){
     long t2 = time2.elapsed();
     newstr<<t2;
     newstr>>tempInt;
-
+    newstr.clear();
     ui->lineEdit->setText(ui->lineEdit->text()+QString::fromStdString(" | "+tempInt+"ms"));
 
     //worker.GetFragmentPosFromSpecificGenus()
@@ -240,6 +240,9 @@ void MainWindow::test(){
         {
             bool ok = temp->mkdir(QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/filtered")));
         }
+        if(!temp->exists(QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/paired")))){
+            temp->mkdir(QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/paired")));
+        }
         for(int i=0;i<CommonFragment.size();i++){
             ofstream ofile;
             QString filename = QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/filtered/"+ CommonFragment[i].name.substr(0,CommonFragment[i].name.length()-3)));
@@ -251,6 +254,34 @@ void MainWindow::test(){
             ofile << tempstr;
             ofile.close();
         }
+        for(int i=0;i<xxx.size();i++){
+            ofstream ofile;
+            QString filename = QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/paired/"+ xxx[i].name.substr(0,xxx[i].name.length()-3)));
+            ofile.open(filename.toStdString().c_str());
+            string tempstr2;
+            GenusPrimerPair tempPair = xxx[i];
+            for(int j=0;j<tempPair.pairs.size();j++){
+                string pos1,pos2,length1,length2;
+                newstr<<tempPair.pairs[j].pos1;
+                newstr>>pos1;
+                newstr.clear();
+                newstr<<tempPair.pairs[j].pos2;
+                newstr>>pos2;
+                newstr.clear();
+                newstr<<tempPair.pairs[j].length1;
+                newstr>>length1;
+                newstr.clear();
+                newstr<<tempPair.pairs[j].length2;
+                newstr>>length2;
+                newstr.clear();
+                tempstr2+=tempPair.pairs[j].fragment1+"\t\t"+pos1+"\t\t"
+                        +length1+"\t\t"+tempPair.pairs[j].fragment2+"\t\t"
+                        +pos2+"\t\t"+length2+"\n";
+            }
+            ofile << tempstr2;
+            ofile.close();
+        }
+
 }
 
 
