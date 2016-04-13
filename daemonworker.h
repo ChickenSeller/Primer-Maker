@@ -24,7 +24,8 @@ public:
     bool IfSpecific(string fragment,SimpleGenusCollection sourceGenus,Genus targetGenus);
     vector <FragmentPair> GetFragmentPosFromSpecificGenus(string species,vector <string> fragments);
     vector <PairInfo> Pair(vector <FragmentPair> in, int MIN, int MAX);
-
+    vector <GenusPrimerPair> MakePair(GenusCollection targetGenus,vector <CommonFragment> commonFragmentCollection, int MIN, int MAX);
+    GenusPrimerPair MakePairInSpecificGenus(Genus targetGenus,CommonFragment commonFragmentCollection, int MIN, int MAX);
     //vector <string> GetGenusCommonFragment()
 };
 

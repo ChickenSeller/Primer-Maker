@@ -89,13 +89,17 @@ class PairInfo{
 public:
     int pos1;
     int length1;
+    string fragment1;
     int pos2;
     int length2;
-    PairInfo(int a,int b,int c,int d){
+    string fragment2;
+    PairInfo(int a,int b,int c,int d,string e,string f){
             pos1 = a;
             length1 = b;
             pos2 = c;
             length2 = d;
+            fragment1=e;
+            fragment2=f;
         }
 };
 class PrimerPair{
@@ -106,8 +110,9 @@ public:
     int posB;
 };
 class GenusPrimerPair{
+public:
     string name;
-    vector <PrimerPair> pairs;
+    vector <PairInfo> pairs;
 };
 
 #ifndef DATASTRUCT_H

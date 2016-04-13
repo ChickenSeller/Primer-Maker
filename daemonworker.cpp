@@ -209,8 +209,7 @@ vector <string> DaemonWorker::GetCommonFragmentFromSpecificGenus(Genus genus, Si
     rawCommonFragment = Unique(rawCommonFragment);
 
     for(int i=0;i<rawCommonFragment.size();i++){
-        commonFragment.push_back(rawCommonFragment[i]);
-
+        //commonFragment.push_back(rawCommonFragment[i]);
         if(GetCoverage(rawCommonFragment[i],genus)>=coverage){
             commonFragment.push_back(rawCommonFragment[i]);
         }
@@ -237,7 +236,8 @@ int DaemonWorker::GetCoverage(string fragment, Genus genus){
         }
     }
     //timer = hit*100/genus.species.size();
-    return hit*100/genus.species.size();
+    int m = hit*100/genus.species.size();
+    return m;
 }
 //判定是否为特征片段，属外查找
 bool DaemonWorker::IfSpecific(string fragment, SimpleGenusCollection sourceGenus,Genus targetGenus){
@@ -272,8 +272,8 @@ vector <FragmentPair> DaemonWorker::GetFragmentPosFromSpecificGenus(string speci
 }
 //获取引物对位置
 vector <PairInfo> DaemonWorker::Pair(vector<FragmentPair> in, int MIN, int MAX){
-    int num;
-        num = in.capacity();
+        int num;
+        num = in.size();
         vector<PairInfo> ans;
         int i, j;
         int t1, t2;
@@ -289,10 +289,42 @@ vector <PairInfo> DaemonWorker::Pair(vector<FragmentPair> in, int MIN, int MAX){
                 if(t2 >= 9)break;
             }
             for(j = t1; j <= t2; j++){
-                ans.push_back(PairInfo(in[i].posA, in[i].posB, in[j].posA, in[j].posB));
-                cout << in[i].posA << ' ' << in[j].posA <<endl;
+                ans.push_back(PairInfo(in[i].posA, in[i].posB, in[j].posA, in[j].posB,in[i].fragment,in[j].fragment));
+                //cout << in[i].posA << ' ' << in[j].posA <<endl;
             }
         }
         return ans;
 }
 //
+vector <GenusPrimerPair> DaemonWorker::MakePair(GenusCollection targetGenus, vector <CommonFragment> commonFragmentCollection, int MIN, int MAX){
+    vector <GenusPrimerPair> result;
+    for(int i=0 ;i<targetGenus.genus.size();i++){
+
+        int k=0;
+        for(k=0;k<commonFragmentCollection.size();k++){
+            if(commonFragmentCollection[k].name==targetGenus.genus[i].name){
+                //tempCommonFragmentInSpecificSpecies = commonFragmentCollection[k].fragments;
+                break;
+            }
+        }
+        GenusPrimerPair tempGenusPrimePair = MakePairInSpecificGenus(targetGenus.genus[i],commonFragmentCollection[k], MIN, MAX);
+        result.push_back(tempGenusPrimePair);
+    }
+    return result;
+}
+GenusPrimerPair DaemonWorker::MakePairInSpecificGenus(Genus targetGenus, CommonFragment commonFragmentCollection, int MIN, int MAX){
+    GenusPrimerPair tempGenusPrimePair;
+    tempGenusPrimePair.name = targetGenus.name;
+    for(int j=0;j<targetGenus.species.size();j++){
+        //vector <string> tempCommonFragmentInSpecificSpecies;
+        vector <FragmentPair> tempPos = GetFragmentPosFromSpecificGenus(targetGenus.species[j].fragment,commonFragmentCollection.fragments);
+        if(tempPos.size()==0){
+            continue;
+        }
+        sort(tempPos.begin(),tempPos.end());
+        vector <PairInfo> tempPairInfo = Pair(tempPos,MIN,MAX);
+        tempGenusPrimePair.pairs.insert(tempGenusPrimePair.pairs.begin(),tempPairInfo.begin(),tempPairInfo.end());
+
+    }
+    return tempGenusPrimePair;
+}

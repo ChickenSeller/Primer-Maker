@@ -211,10 +211,6 @@ void MainWindow::test(){
         for(int j=0;j<tempString.size();j++){
             s+=tempString[j]+"\n";
         }
-        //s+=CommonFragment[i]+"\n";
-        //timer +=1;
-        //ui->plainTextEdit->setPlainText(QString::fromStdString(CommonFragment[i]+"\n")+ui->plainTextEdit->toPlainText());
-        //QApplication::processEvents();
     }
 
     //ui->lineEdit->setText(QString::fromStdString("Success"));
@@ -223,8 +219,44 @@ void MainWindow::test(){
     QApplication::processEvents();
     newstr<<CommonFragment.size();
     newstr>>tempInt;
+    QTime time2;
+    time2.start();
+    vector <GenusPrimerPair> xxx = worker.MakePair(collection,CommonFragment,config.productLengthBottom,config.productLengthTop);
+    int num = xxx.size();
+    long t2 = time2.elapsed();
+    newstr<<t2;
+    newstr>>tempInt;
+
+    ui->lineEdit->setText(ui->lineEdit->text()+QString::fromStdString(" | "+tempInt+"ms"));
+
     //worker.GetFragmentPosFromSpecificGenus()
     //ui->plainTextEdit->setPlainText(QString::fromStdString(currentSpecies.fragment+"\n\n"+currentGenus.species[2].fragment));
 
+    QDir *temp = new QDir;
+        bool exist = temp->exists(QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/filtered")));
+        if(exist){
+
+        }else
+        {
+            bool ok = temp->mkdir(QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/filtered")));
+        }
+        for(int i=0;i<CommonFragment.size();i++){
+            ofstream ofile;
+            QString filename = QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/filtered/"+ CommonFragment[i].name.substr(0,CommonFragment[i].name.length()-3)));
+            ofile.open(filename.toStdString().c_str());
+            string tempstr;
+            for(int j=0;j<CommonFragment[i].fragments.size();j++){
+                tempstr+=CommonFragment[i].fragments[j]+"\n";
+            }
+            ofile << tempstr;
+            ofile.close();
+        }
 }
 
+
+void MainWindow::on_pushButton_3_clicked()
+{
+
+
+
+}

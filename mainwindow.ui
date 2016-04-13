@@ -53,6 +53,19 @@
        <enum>Qt::ScrollBarAsNeeded</enum>
       </property>
      </widget>
+     <widget class="QPushButton" name="pushButton_3">
+      <property name="geometry">
+       <rect>
+        <x>630</x>
+        <y>5</y>
+        <width>75</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>导出到文件</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab">
      <attribute name="title">
