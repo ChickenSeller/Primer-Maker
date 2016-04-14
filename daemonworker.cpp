@@ -114,7 +114,7 @@ vector <string> DaemonWorker::GetCommonFragment(string stringA, string stringB,i
     int fragmentGroupLength = fragmentLengthBottom/2;
     for(int i=0;i<stringA.length()/fragmentGroupLength;i++){
         string tempStr;
-        tempStr = stringA.substr(i,fragmentGroupLength);
+        tempStr = stringA.substr(i*fragmentGroupLength,fragmentGroupLength);
         stringArray.push_back(tempStr);
     }
     for(int i=0;i<stringArray.size();i++){
@@ -199,13 +199,21 @@ vector <CommonFragment> DaemonWorker::GetCommonFragmentFromGenus(GenusCollection
 vector <string> DaemonWorker::GetCommonFragmentFromSpecificGenus(Genus genus, SimpleGenusCollection sourceGenus, int coverage){
     vector <string> rawCommonFragment;
     vector <string> commonFragment;
-
     for(int i=0;i<genus.species.size();i++){
         for(int j=i;j<genus.species.size();j++){
             vector <string> tempCommonFragment = GetCommonFragment(genus.species[i].fragment,genus.species[j].fragment,config.fragmentLengthBottom,config.fragmentLengthTop);
             rawCommonFragment.insert(rawCommonFragment.end(),tempCommonFragment.begin(),tempCommonFragment.end());
+            rawCommonFragment = Unique(rawCommonFragment);
         }
     }
+    /*ofstream ostr;
+    ostr.open("d:\\test.txt");
+    string str2;
+    for(int i=0;i<rawCommonFragment.size();i++){
+        str2+=rawCommonFragment[i]+"\n";
+    }
+    ostr<<str2;
+    ostr.close();*/
     rawCommonFragment = Unique(rawCommonFragment);
 
     for(int i=0;i<rawCommonFragment.size();i++){
@@ -325,6 +333,7 @@ GenusPrimerPair DaemonWorker::MakePairInSpecificGenus(Genus targetGenus, CommonF
         sort(tempPos.begin(),tempPos.end());
         vector <PairInfo> tempPairInfo = Pair(tempPos,MIN,MAX);
         tempGenusPrimePair.pairs.insert(tempGenusPrimePair.pairs.begin(),tempPairInfo.begin(),tempPairInfo.end());
+        break;
 
     }
     return tempGenusPrimePair;
