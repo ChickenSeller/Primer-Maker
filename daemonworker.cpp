@@ -283,10 +283,11 @@ vector <PairInfo> DaemonWorker::Pair(vector<FragmentPair> in, int MIN, int MAX){
                 t1++;
                 if(t1 >= num - 1)return ans;
             }
+            if(in[t1].posA > in[i].posA + MAX){continue;}
             if(t2 < t1)t2 = t1;
             while(in[t2+1].posA < in[i].posA + MAX){
                 t2++;
-                if(t2 >= 9)break;
+                if(t2 >= num-1)break;
             }
             for(j = t1; j <= t2; j++){
                 ans.push_back(PairInfo(in[i].posA, in[i].posB, in[j].posA, in[j].posB,in[i].fragment,in[j].fragment));
@@ -328,3 +329,126 @@ GenusPrimerPair DaemonWorker::MakePairInSpecificGenus(Genus targetGenus, CommonF
     }
     return tempGenusPrimePair;
 }
+
+bool DaemonWorker::IfTmDiff(string strA, string strB, int t){
+    string a=strA;
+    string b=strB;
+    int length;
+        int d1, d2, i;
+        d1 = d2 = 0;
+        length = a.length();
+        for(i = 0; i <= length - 1; i++){
+            if(a[i] == 'A' || a[i] == 'T')
+                d1 += 2;
+            else
+                d1 += 4;
+        }
+        length = b.length();
+        for(i = 0; i <= length - 1; i++){
+            if(b[i] == 'A' || b[i] == 'T')
+                d2 += 2;
+            else
+                d2 += 4;
+        }
+        if(d1 - d2 < t && d1 - d2 > -t)
+            return true;
+        else
+            return false;
+}
+
+bool DaemonWorker::IfRepeat(string str, int num){
+    string in = str;
+    string a, t, c, g;
+        a = t = c = g = "";
+        int i;
+        for(i = 1; i <= num; i++){
+            a += "A";
+            t += "T";
+            c += "C";
+            g += "G";
+        }
+        if(in.find(a) != -1 || in.find(t) != -1 || in.find(c) != -1 || in.find(g) != -1)return false;
+        return true;
+}
+
+bool DaemonWorker::IfHairpinStructure(string str, int num){
+    int length, i, j;
+        string temp,in;
+        in=str;
+        length = in.length();
+        for(i = 0; i <= length - num; i++){
+            temp = "";
+            for(j = 0; j <= num - 1; j++){
+                if(in[i + j] == 'A')temp += "T";
+                if(in[i + j] == 'T')temp += "A";
+                if(in[i + j] == 'C')temp += "G";
+                if(in[i + j] == 'G')temp += "C";
+            }
+            reverse(temp.begin(), temp.end());
+            if(in.find(temp) != -1)return false;
+        }
+        return true;
+}
+
+bool DaemonWorker::IfDimer(string strA, string strB, int num){
+    string a=strA;
+    string b=strB;
+    int length, i;
+        length = a.length();
+        string temp;
+        for(i = 0; i <= length - num; i++){
+            temp = a.substr(i, num);
+            if(b.find(temp) != -1)return false;
+        }
+        return false;
+}
+
+void DaemonWorker::Reverse(string &in){
+        int length, i;
+        string temp;
+        temp = "";
+        length = in.length();
+        reverse(in.begin(), in.end());
+        for(i = 0; i <= length - 1; i++){
+            if(in[i] == 'A')temp += "T";
+            if(in[i] == 'T')temp += "A";
+            if(in[i] == 'C')temp += "G";
+            if(in[i] == 'G')temp += "C";
+        }
+        in = temp;
+}
+
+vector <GenusPrimerPair> DaemonWorker::FilterFragment(vector<GenusPrimerPair> source){
+    vector <GenusPrimerPair> result;
+    for(int i=0;i<source.size();i++){
+        GenusPrimerPair tempGenusPrimerPair;
+        tempGenusPrimerPair.name = source[i].name;
+        for(int j=0;j<source[i].pairs.size();j++){
+            PairInfo tempPairInfo=source[i].pairs[j];
+            if(!IfTmDiff(tempPairInfo.fragment1,tempPairInfo.fragment2,5)){
+                continue;
+            }
+            if(!IfRepeat(tempPairInfo.fragment1,3)){
+                continue;
+            }
+            if(!IfRepeat(tempPairInfo.fragment2,3)){
+                continue;
+            }
+            if(!IfHairpinStructure(tempPairInfo.fragment1,4)){
+                continue;
+            }
+            if(!IfHairpinStructure(tempPairInfo.fragment2,4)){
+                continue;
+            }
+            if(!IfDimer(tempPairInfo.fragment1,tempPairInfo.fragment2,4)){
+                continue;
+            }
+            Reverse(tempPairInfo.fragment2);
+            tempGenusPrimerPair.pairs.push_back(tempPairInfo);
+        }
+        result.push_back(tempGenusPrimerPair);
+    }
+    return result;
+}
+
+

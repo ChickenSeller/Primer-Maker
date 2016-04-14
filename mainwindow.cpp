@@ -24,23 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //config.sourceGenus = "text";
     //ui->lineEdit->setText(QString::fromStdString(config.sourceGenus));
     DaemonWorker worker1;
-    vector <string> temp;
-    temp.push_back("text1");
-    temp.push_back("text2");
-    temp.push_back("text1");
-    temp.push_back("text4");
-    temp.push_back("text5");
-    temp.push_back("text1");
-    temp.push_back("text7");
-    temp.push_back("text8");
-    temp.push_back("text1");
-    temp.push_back("text10");
-    temp.push_back("text11");
-    temp.push_back("text8");
-    vector <string> x = worker1.Unique(temp);
-    for(int i=0;i<x.size();i++){
-        ui->plainTextEdit->setPlainText(QString::fromStdString(x[i]+"\n")+ui->plainTextEdit->toPlainText());
-    }
+
 
 }
 
@@ -281,6 +265,8 @@ void MainWindow::test(){
             ofile << tempstr2;
             ofile.close();
         }
+        vector <GenusPrimerPair> xxxx = worker.FilterFragment(xxx);
+        int mmm=xxxx.size();
 
 }
 

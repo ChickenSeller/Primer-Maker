@@ -26,6 +26,12 @@ public:
     vector <PairInfo> Pair(vector <FragmentPair> in, int MIN, int MAX);
     vector <GenusPrimerPair> MakePair(GenusCollection targetGenus,vector <CommonFragment> commonFragmentCollection, int MIN, int MAX);
     GenusPrimerPair MakePairInSpecificGenus(Genus targetGenus,CommonFragment commonFragmentCollection, int MIN, int MAX);
+    bool IfTmDiff(string strA,string strB,int t);
+    bool IfRepeat(string str,int num);
+    bool IfHairpinStructure(string str,int num);
+    bool IfDimer(string strA,string strB,int num);
+    void Reverse(string &in);
+    vector <GenusPrimerPair> FilterFragment(vector <GenusPrimerPair> source);
     //vector <string> GetGenusCommonFragment()
 };
 
