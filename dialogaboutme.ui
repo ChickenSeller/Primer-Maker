@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>380</width>
-    <height>414</height>
+    <height>351</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -101,6 +101,19 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="text">
     <string>Ithildin Kaguya Asphodelus</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>280</x>
+     <y>325</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>关闭</string>
    </property>
   </widget>
  </widget>

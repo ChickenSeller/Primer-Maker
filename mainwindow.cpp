@@ -14,6 +14,7 @@
 
 Config config;
 int timer;
+vector <CommonFragment> CommonFragments;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -24,8 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //config.sourceGenus = "text";
     //ui->lineEdit->setText(QString::fromStdString(config.sourceGenus));
     DaemonWorker worker1;
-
-
+    //ui->listWidget->addItem(QString::fromStdString(" "));
 }
 
 MainWindow::~MainWindow()
@@ -179,7 +179,7 @@ void MainWindow::test(){
     //SimpleGenusCollection sourceGnenus = worker.LoadSimpleSourceGenus(config.sourceGenus);
     //ui->plainTextEdit->setPlainText(QString::fromStdString(sourceGnenus.genus[1].name+"\n"+sourceGnenus.genus[1].fragment));
     SimpleGenusCollection x = worker.LoadSimpleSourceGenus(config.sourceGenus);
-    vector <CommonFragment> CommonFragment = worker.GetCommonFragmentFromGenus(collection,x,config.fragmentCoverage);
+    CommonFragments = worker.GetCommonFragmentFromGenus(collection,x,config.fragmentCoverage);
     //vector <string> CommonFragment = worker.GetCommonFragmentFromSpecificGenus(currentGenus,x,config.fragmentCoverage); //GetCommonFragment(currentSpecies.fragment,currentGenus.species[4].fragment,config.fragmentLengthBottom,config.fragmentLengthTop);
     ui->lineEdit->setText(QString::fromStdString("Rendering"));
     long t =time.elapsed();
@@ -189,9 +189,9 @@ void MainWindow::test(){
     ui->lineEdit->setText(QString::fromStdString(tempInt+"ms"));
     QApplication::processEvents();
 
-    for(int i=0;i<CommonFragment.size();i++){
-        vector <string> tempString = CommonFragment[i].fragments;
-        s+=CommonFragment[i].name+"\n";
+    for(int i=0;i<CommonFragments.size();i++){
+        vector <string> tempString = CommonFragments[i].fragments;
+        s+=CommonFragments[i].name+"\n";
         for(int j=0;j<tempString.size();j++){
             s+=tempString[j]+"\n";
         }
@@ -201,11 +201,11 @@ void MainWindow::test(){
 
     ui->plainTextEdit->setPlainText(QString::fromStdString(s));
     QApplication::processEvents();
-    newstr<<CommonFragment.size();
+    newstr<<CommonFragments.size();
     newstr>>tempInt;
     QTime time2;
     time2.start();
-    vector <GenusPrimerPair> xxx = worker.MakePair(collection,CommonFragment,config.productLengthBottom,config.productLengthTop);
+    vector <GenusPrimerPair> xxx = worker.MakePair(collection,CommonFragments,config.productLengthBottom,config.productLengthTop);
     int num = xxx.size();
     long t2 = time2.elapsed();
     newstr<<t2;
@@ -227,13 +227,13 @@ void MainWindow::test(){
         if(!temp->exists(QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/paired")))){
             temp->mkdir(QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/paired")));
         }
-        for(int i=0;i<CommonFragment.size();i++){
+        for(int i=0;i<CommonFragments.size();i++){
             ofstream ofile;
-            QString filename = QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/filtered/"+ CommonFragment[i].name.substr(0,CommonFragment[i].name.length()-3)));
+            QString filename = QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/filtered/"+ CommonFragments[i].name.substr(0,CommonFragments[i].name.length()-3)));
             ofile.open(filename.toStdString().c_str());
             string tempstr;
-            for(int j=0;j<CommonFragment[i].fragments.size();j++){
-                tempstr+=CommonFragment[i].fragments[j]+"\n";
+            for(int j=0;j<CommonFragments[i].fragments.size();j++){
+                tempstr+=CommonFragments[i].fragments[j]+"\n";
             }
             ofile << tempstr;
             ofile.close();
@@ -267,13 +267,42 @@ void MainWindow::test(){
         }
         vector <GenusPrimerPair> xxxx = worker.FilterFragment(xxx);
         int mmm=xxxx.size();
+        RenderFragmentList(CommonFragments);
+
 
 }
 
 
+
+void MainWindow::RenderFragmentList(vector<CommonFragment> &commonFragment){
+    //ui->listWidget->addItem(QString::fromStdString("test"));
+    for(int i=0;i<commonFragment.size();i++){
+        ui->listWidget->addItem(QString::fromStdString(commonFragment[i].name));
+    }
+    //QObject::connect(ui->listWidget, SIGNAL(currentTextChanged(const QString &)), this, SLOT(RenderFragmentListDetail(const QString &)));
+    //ui->lineEdit->setText( ui->listWidget->currentItem()->text());
+    //RenderFragmentListDetail(ui->listWidget->currentItem()->text());
+}
+void MainWindow::RenderFragmentListDetail(const QString &name){
+    int i=0;
+    for(i=0;i<CommonFragments.size();i++){
+        if(name==QString::fromStdString( CommonFragments[i].name)){
+            break;
+        }
+    }
+    QStringList list1;
+    for(int j=0;j<CommonFragments[i].fragments.size();j++){
+        list1<<QString::fromStdString(CommonFragments[i].fragments[j]);
+    }
+    ui->listWidget_2->addItems(list1);
+}
+
 void MainWindow::on_pushButton_3_clicked()
 {
 
+}
 
-
+void MainWindow::on_listWidget_currentTextChanged(const QString &currentText)
+{
+    RenderFragmentListDetail(currentText);
 }

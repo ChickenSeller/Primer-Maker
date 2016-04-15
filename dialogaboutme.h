@@ -15,6 +15,9 @@ public:
     explicit DialogAboutMe(QWidget *parent = 0);
     ~DialogAboutMe();
 
+private slots:
+    void on_pushButton_clicked();
+
 private:
     Ui::DialogAboutMe *ui;
 };

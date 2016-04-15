@@ -185,7 +185,16 @@ vector <CommonFragment> DaemonWorker::GetCommonFragmentFromGenus(GenusCollection
         tempFragment.name = targetGenus.genus[i].name;
         if(targetGenus.genus[i].species.size()<2){
             if(targetGenus.genus[i].species.size()==1){
-                targetGenus.genus[i].species.push_back(targetGenus.genus[i].species[0]);
+                int j=0;
+                for(j=0;j<targetGenus.genus[i].species[0].fragment.length()/config.fragmentLengthTop;j++){
+                    string tempStr = targetGenus.genus[i].species[0].fragment.substr(j*config.fragmentLengthTop,config.fragmentLengthTop);
+                    if(IfSpecific(tempStr,sourceGenus,targetGenus.genus[i])){
+                        tempFragment.fragments.push_back(tempStr);
+                    }
+
+                }
+                commonFragments.push_back(tempFragment);
+                continue;
             }else{
                 continue;
             }

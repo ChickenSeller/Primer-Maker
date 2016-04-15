@@ -1,4 +1,5 @@
-
+#ifndef DATASTRUCT_H
+#define DATASTRUCT_H
 #include<iostream>
 #include<string>
 #include<QJsonObject>
@@ -115,10 +116,10 @@ public:
     vector <PairInfo> pairs;
 };
 
-#ifndef DATASTRUCT_H
-#define DATASTRUCT_H
+
 extern int timer;
 extern Config config;
+extern vector <CommonFragment> CommonFragments;
 #endif // DATASTRUCT_H
 
 

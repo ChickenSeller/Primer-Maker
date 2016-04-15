@@ -53,7 +53,7 @@ void DialogSettingProperties::on_pushButton_2_clicked()
 }
 void DialogSettingProperties::getConfig(){
     ui->lineEdit->setText(QString::fromStdString(config.targetGenus));
-    ui->lineEdit_2->setText(QDir::currentPath());
+    ui->lineEdit_2->setText(QString::fromStdString(config.sourceGenus));
     std::stringstream newstr;
     newstr<<config.fragmentCoverage;
     string tempInt = "";

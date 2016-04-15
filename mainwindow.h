@@ -7,6 +7,7 @@
 #include "dialograpidtask.h"
 #include "dialogaboutme.h"
 #include <QMainWindow>
+#include "datadef.h"
 
 namespace Ui {
 class MainWindow;
@@ -29,7 +30,9 @@ public:
     void SaveConfig();
     void LoadConfig();
     void test();
-
+    void RenderFragmentList(vector <CommonFragment> &commonFragment);
+    void RenderPairList(vector <GenusPrimerPair> &genusPrimerPair);
+    void RenderFragmentListDetail(const QString & name);
 
 
 
@@ -43,6 +46,9 @@ private slots:
     void on_action_3_triggered();
 
     void on_pushButton_3_clicked();
+
+
+    void on_listWidget_currentTextChanged(const QString &currentText);
 
 private:
     Ui::MainWindow *ui;

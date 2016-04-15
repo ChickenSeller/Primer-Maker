@@ -14,3 +14,8 @@ DialogAboutMe::~DialogAboutMe()
 {
     delete ui;
 }
+
+void DialogAboutMe::on_pushButton_clicked()
+{
+    accept();
+}
