@@ -302,9 +302,8 @@ vector <PairInfo> DaemonWorker::Pair(vector<FragmentPair> in, int MIN, int MAX){
             }
             if(in[t1].posA > in[i].posA + MAX){continue;}
             if(t2 < t1)t2 = t1;
-            while(in[t2+1].posA < in[i].posA + MAX){
+            while(t2 < num - 1 && in[t2+1].posA < in[i].posA + MAX){
                 t2++;
-                if(t2 >= num-1)break;
             }
             for(j = t1; j <= t2; j++){
                 ans.push_back(PairInfo(in[i].posA, in[i].posB, in[j].posA, in[j].posB,in[i].fragment,in[j].fragment));
@@ -354,14 +353,14 @@ bool DaemonWorker::IfTmDiff(string strA, string strB, int t){
     d1 = d2 = 0;
     length = strA.length();
     for(i = 0; i <= length - 1; i++){
-        if(strA[i] == 'A' || strA[i] == 'T')
+        if(strA[i] == 'a' || strA[i] == 't')
             d1 += 2;
         else
             d1 += 4;
     }
     length = strB.length();
     for(i = 0; i <= length - 1; i++){
-        if(strB[i] == 'A' || strB[i] == 'T')
+        if(strB[i] == 'a' || strB[i] == 't')
             d2 += 2;
         else
             d2 += 4;
@@ -377,10 +376,10 @@ bool DaemonWorker::IfRepeat(string str, int num){
     a = t = c = g = "";
     int i;
     for(i = 1; i <= num; i++){
-        a += "A";
-        t += "T";
-        c += "C";
-        g += "G";
+        a += "a";
+        t += "t";
+        c += "c";
+        g += "g";
     }
     if(str.find(a) != -1 || str.find(t) != -1 || str.find(c) != -1 || str.find(g) != -1)return false;
     return true;
@@ -393,10 +392,10 @@ bool DaemonWorker::IfHairpinStructure(string str, int num){
     for(i = 0; i <= length - num; i++){
         temp = "";
         for(j = 0; j <= num - 1; j++){
-            if(str[i + j] == 'A')temp += "T";
-            if(str[i + j] == 'T')temp += "A";
-            if(str[i + j] == 'C')temp += "G";
-            if(str[i + j] == 'G')temp += "C";
+            if(str[i + j] == 'a')temp += "t";
+            if(str[i + j] == 't')temp += "a";
+            if(str[i + j] == 'c')temp += "g";
+            if(str[i + j] == 'g')temp += "c";
         }
         reverse(temp.begin(), temp.end());
         if(str.find(temp) != -1)return false;
@@ -422,10 +421,10 @@ void DaemonWorker::Reverse(string &str){
         length = str.length();
         reverse(str.begin(), str.end());
         for(i = 0; i <= length - 1; i++){
-            if(str[i] == 'A')temp += "T";
-            if(str[i] == 'T')temp += "A";
-            if(str[i] == 'C')temp += "G";
-            if(str[i] == 'G')temp += "C";
+            if(str[i] == 'a')temp += "t";
+            if(str[i] == 't')temp += "a";
+            if(str[i] == 'c')temp += "g";
+            if(str[i] == 'g')temp += "c";
         }
         str = temp;
 }
