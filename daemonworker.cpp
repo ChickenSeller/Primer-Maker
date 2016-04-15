@@ -387,18 +387,20 @@ bool DaemonWorker::IfRepeat(string str, int num){
 
 bool DaemonWorker::IfHairpinStructure(string str, int num){
     int length, i, j;
-    string temp;
+    string temp1;
+    string temp2;
     length = str.length();
     for(i = 0; i <= length - num; i++){
-        temp = "";
+        temp1 = "";
         for(j = 0; j <= num - 1; j++){
-            if(str[i + j] == 'a')temp += "t";
-            if(str[i + j] == 't')temp += "a";
-            if(str[i + j] == 'c')temp += "g";
-            if(str[i + j] == 'g')temp += "c";
+            if(str[i + j] == 'a')temp1 += "t";
+            if(str[i + j] == 't')temp1 += "a";
+            if(str[i + j] == 'c')temp1 += "g";
+            if(str[i + j] == 'g')temp1 += "c";
         }
-        reverse(temp.begin(), temp.end());
-        if(str.find(temp) != -1)return false;
+        reverse(temp1.begin(), temp1.end());
+        temp2 = str.substr(length - num - 3);
+        if(temp2.find(temp1) != -1)return false;
     }
     return true;
 }
@@ -411,7 +413,7 @@ bool DaemonWorker::IfDimer(string strA, string strB, int num){
         temp = strA.substr(i, num);
         if(strB.find(temp) != -1)return false;
     }
-    return false;
+    return true;
 }
 
 void DaemonWorker::Reverse(string &str){
