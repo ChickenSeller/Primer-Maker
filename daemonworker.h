@@ -3,10 +3,12 @@
 #include "datadef.h"
 #include<fstream>
 #include<sstream>
+#include <QThread>
 using namespace std;
-class DaemonWorker
+class DaemonWorker: public QThread
 {
 public:
+    string method;
     DaemonWorker();
     GenusCollection LoadTargetGenus(string filePath,string targetFileName);
     SimpleGenusCollection LoadSimpleSourceGenus(string filePath);
@@ -33,6 +35,8 @@ public:
     void Reverse(string &in);
     vector <GenusPrimerPair> FilterFragment(vector <GenusPrimerPair> source);
     //vector <string> GetGenusCommonFragment()
+protected:
+    void run();
 };
 
 #endif // DAEMONWORKER_H

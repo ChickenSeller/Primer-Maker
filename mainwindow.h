@@ -31,7 +31,8 @@ public:
     void LoadConfig();
     void test();
     void RenderFragmentList(vector <CommonFragment> &commonFragment);
-    void RenderPairList(vector <GenusPrimerPair> &genusPrimerPair);
+    void RenderRegularPairList(vector <GenusPrimerPair> &genusPrimerPair);
+    void RenderRegularPairListDetail(const QString & name);
     void RenderFragmentListDetail(const QString & name);
 
 
@@ -49,6 +50,8 @@ private slots:
 
 
     void on_listWidget_currentTextChanged(const QString &currentText);
+
+    void on_listWidget_3_currentTextChanged(const QString &currentText);
 
 private:
     Ui::MainWindow *ui;

@@ -120,6 +120,7 @@ public:
 extern int timer;
 extern Config config;
 extern vector <CommonFragment> CommonFragments;
+extern vector <GenusPrimerPair> genusPrimerPairRegular;
 #endif // DATASTRUCT_H
 
 

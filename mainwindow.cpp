@@ -11,10 +11,12 @@
 #include "qmessagebox.h"
 #include "daemonworker.h"
 #include <QTime>
+#include "QStandardItemModel"
 
 Config config;
 int timer;
 vector <CommonFragment> CommonFragments;
+vector <GenusPrimerPair> genusPrimerPairRegular;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -26,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //ui->lineEdit->setText(QString::fromStdString(config.sourceGenus));
     DaemonWorker worker1;
     //ui->listWidget->addItem(QString::fromStdString(" "));
+
 }
 
 MainWindow::~MainWindow()
@@ -205,8 +208,8 @@ void MainWindow::test(){
     newstr>>tempInt;
     QTime time2;
     time2.start();
-    vector <GenusPrimerPair> xxx = worker.MakePair(collection,CommonFragments,config.productLengthBottom,config.productLengthTop);
-    int num = xxx.size();
+    genusPrimerPairRegular = worker.MakePair(collection,CommonFragments,config.productLengthBottom,config.productLengthTop);
+    int num = genusPrimerPairRegular.size();
     long t2 = time2.elapsed();
     newstr<<t2;
     newstr>>tempInt;
@@ -227,6 +230,9 @@ void MainWindow::test(){
         if(!temp->exists(QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/paired")))){
             temp->mkdir(QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/paired")));
         }
+        if(!temp->exists(QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/result")))){
+            temp->mkdir(QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/result")));
+        }
         for(int i=0;i<CommonFragments.size();i++){
             ofstream ofile;
             QString filename = QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/filtered/"+ CommonFragments[i].name.substr(0,CommonFragments[i].name.length()-3)));
@@ -238,12 +244,12 @@ void MainWindow::test(){
             ofile << tempstr;
             ofile.close();
         }
-        for(int i=0;i<xxx.size();i++){
+        for(int i=0;i<genusPrimerPairRegular.size();i++){
             ofstream ofile;
-            QString filename = QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/paired/"+ xxx[i].name.substr(0,xxx[i].name.length()-3)));
+            QString filename = QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/paired/"+ genusPrimerPairRegular[i].name.substr(0,genusPrimerPairRegular[i].name.length()-3)));
             ofile.open(filename.toStdString().c_str());
             string tempstr2;
-            GenusPrimerPair tempPair = xxx[i];
+            GenusPrimerPair tempPair = genusPrimerPairRegular[i];
             for(int j=0;j<tempPair.pairs.size();j++){
                 string pos1,pos2,length1,length2;
                 newstr<<tempPair.pairs[j].pos1;
@@ -265,11 +271,38 @@ void MainWindow::test(){
             ofile << tempstr2;
             ofile.close();
         }
-        vector <GenusPrimerPair> xxxx = worker.FilterFragment(xxx);
-        int mmm=xxxx.size();
+        genusPrimerPairRegular = worker.FilterFragment(genusPrimerPairRegular);
+
+        for(int i=0;i<genusPrimerPairRegular.size();i++){
+            ofstream ofile;
+            QString filename = QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/result/"+ genusPrimerPairRegular[i].name.substr(0,genusPrimerPairRegular[i].name.length()-3)));
+            ofile.open(filename.toStdString().c_str());
+            string tempstr2;
+            GenusPrimerPair tempPair = genusPrimerPairRegular[i];
+            for(int j=0;j<tempPair.pairs.size();j++){
+                string pos1,pos2,length1,length2;
+                newstr<<tempPair.pairs[j].pos1;
+                newstr>>pos1;
+                newstr.clear();
+                newstr<<tempPair.pairs[j].pos2;
+                newstr>>pos2;
+                newstr.clear();
+                newstr<<tempPair.pairs[j].length1;
+                newstr>>length1;
+                newstr.clear();
+                newstr<<tempPair.pairs[j].length2;
+                newstr>>length2;
+                newstr.clear();
+                tempstr2+=tempPair.pairs[j].fragment1+"\t\t"+pos1+"\t\t"
+                        +length1+"\t\t"+tempPair.pairs[j].fragment2+"\t\t"
+                        +pos2+"\t\t"+length2+"\n";
+            }
+            ofile << tempstr2;
+            ofile.close();
+        }
+        //int mmm=genusPrimerPairRegularx.size();
         RenderFragmentList(CommonFragments);
-
-
+        RenderRegularPairList(genusPrimerPairRegular);
 }
 
 
@@ -305,4 +338,63 @@ void MainWindow::on_pushButton_3_clicked()
 void MainWindow::on_listWidget_currentTextChanged(const QString &currentText)
 {
     RenderFragmentListDetail(currentText);
+}
+
+void MainWindow::RenderRegularPairList(vector<GenusPrimerPair> &genusPrimerPair){
+    for(int i=0;i<genusPrimerPair.size();i++){
+        ui->listWidget_3->addItem(QString::fromStdString(genusPrimerPair[i].name));
+    }
+}
+void MainWindow::RenderRegularPairListDetail(const QString &name){
+    ui->tableView->setEditTriggers(QTableView::NoEditTriggers);
+    ui->tableView->setSelectionBehavior(QTableView::SelectRows);
+    QStandardItemModel *model = new QStandardItemModel;
+     model->setColumnCount(6);
+     model->setHeaderData(0,Qt::Horizontal,tr("引物1序列"));
+     model->setHeaderData(1,Qt::Horizontal,tr("引物1头部位置"));
+     model->setHeaderData(2,Qt::Horizontal,tr("引物1长度"));
+     model->setHeaderData(3,Qt::Horizontal,tr("引物2序列"));
+     model->setHeaderData(4,Qt::Horizontal,tr("引物2头部位置"));
+     model->setHeaderData(5,Qt::Horizontal,tr("引物2长度"));
+
+
+    int i=0;
+    for(i=0;i<genusPrimerPairRegular.size();i++){
+        if(name==QString::fromStdString(genusPrimerPairRegular[i].name)){
+            break;
+        }
+    }
+    for(int j=0;j<genusPrimerPairRegular[i].pairs.size();j++){
+        stringstream newstr;
+        string pos1,pos2,length1,length2;
+        newstr<<genusPrimerPairRegular[i].pairs[j].pos1;
+        newstr>>pos1;
+        newstr.clear();
+        newstr<<genusPrimerPairRegular[i].pairs[j].pos2;
+        newstr>>pos2;
+        newstr.clear();
+        newstr<<genusPrimerPairRegular[i].pairs[j].length1;
+        newstr>>length1;
+        newstr.clear();
+        newstr<<genusPrimerPairRegular[i].pairs[j].length2;
+        newstr>>length2;
+        newstr.clear();
+        QStandardItem* item1 = new QStandardItem(tr(genusPrimerPairRegular[i].pairs[j].fragment1.c_str()));
+        QStandardItem* item2 = new QStandardItem(tr(pos1.c_str()));
+        QStandardItem* item3 = new QStandardItem(tr(length1.c_str()));
+        QStandardItem* item4 = new QStandardItem(tr(genusPrimerPairRegular[i].pairs[j].fragment1.c_str()));
+        QStandardItem* item5 = new QStandardItem(tr(pos2.c_str()));
+        QStandardItem* item6 = new QStandardItem(tr(length2.c_str()));
+        QList<QStandardItem*> item;
+         item << item1 << item2 << item3 << item4 << item5 << item6;
+         model->appendRow(item);
+    }
+    ui->tableView->setModel(model);
+    ui->tableView->resizeColumnsToContents();
+
+}
+
+void MainWindow::on_listWidget_3_currentTextChanged(const QString &currentText)
+{
+    RenderRegularPairListDetail(currentText);
 }

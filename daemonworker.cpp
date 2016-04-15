@@ -462,5 +462,12 @@ vector <GenusPrimerPair> DaemonWorker::FilterFragment(vector<GenusPrimerPair> so
     }
     return result;
 }
+void DaemonWorker::run(){
+    /*
+    switch(method){
+    case ""
+    }
+    */
+}
 
 
