@@ -399,7 +399,7 @@ bool DaemonWorker::IfHairpinStructure(string str, int num){
             if(str[i + j] == 'g')temp1 += "c";
         }
         reverse(temp1.begin(), temp1.end());
-        temp2 = str.substr(length - num - 3);
+        temp2 = str.substr(i + num);
         if(temp2.find(temp1) != -1)return false;
     }
     return true;
