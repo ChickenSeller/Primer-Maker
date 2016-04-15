@@ -382,7 +382,7 @@ void MainWindow::RenderRegularPairListDetail(const QString &name){
         QStandardItem* item1 = new QStandardItem(tr(genusPrimerPairRegular[i].pairs[j].fragment1.c_str()));
         QStandardItem* item2 = new QStandardItem(tr(pos1.c_str()));
         QStandardItem* item3 = new QStandardItem(tr(length1.c_str()));
-        QStandardItem* item4 = new QStandardItem(tr(genusPrimerPairRegular[i].pairs[j].fragment1.c_str()));
+        QStandardItem* item4 = new QStandardItem(tr(genusPrimerPairRegular[i].pairs[j].fragment2.c_str()));
         QStandardItem* item5 = new QStandardItem(tr(pos2.c_str()));
         QStandardItem* item6 = new QStandardItem(tr(length2.c_str()));
         QList<QStandardItem*> item;
