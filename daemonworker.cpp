@@ -208,11 +208,21 @@ vector <CommonFragment> DaemonWorker::GetCommonFragmentFromGenus(GenusCollection
 vector <string> DaemonWorker::GetCommonFragmentFromSpecificGenus(Genus genus, SimpleGenusCollection sourceGenus, int coverage){
     vector <string> rawCommonFragment;
     vector <string> commonFragment;
-    for(int i=0;i<genus.species.size();i++){
-        for(int j=i;j<genus.species.size();j++){
-            vector <string> tempCommonFragment = GetCommonFragment(genus.species[i].fragment,genus.species[j].fragment,config.fragmentLengthBottom,config.fragmentLengthTop);
-            rawCommonFragment.insert(rawCommonFragment.end(),tempCommonFragment.begin(),tempCommonFragment.end());
-            rawCommonFragment = Unique(rawCommonFragment);
+    vector <string> tempCommonFragment;
+    int PctSpeciesNum;
+    PctSpeciesNum = ceil(genus.species.size() * (1 - (float)coverage / 100));
+    if(PctSpeciesNum == 1){
+        tempCommonFragment = GetCommonFragment(genus.species[0].fragment,genus.species[0].fragment,config.fragmentLengthBottom,config.fragmentLengthTop);
+        rawCommonFragment.insert(rawCommonFragment.end(),tempCommonFragment.begin(),tempCommonFragment.end());
+        rawCommonFragment = Unique(rawCommonFragment);
+    }
+    else{
+        for(int i = 0; i < PctSpeciesNum; i++){
+            for(int j = i + 1; j < PctSpeciesNum; j++){
+                tempCommonFragment = GetCommonFragment(genus.species[i].fragment,genus.species[j].fragment,config.fragmentLengthBottom,config.fragmentLengthTop);
+                rawCommonFragment.insert(rawCommonFragment.end(),tempCommonFragment.begin(),tempCommonFragment.end());
+                rawCommonFragment = Unique(rawCommonFragment);
+            }
         }
     }
     /*ofstream ostr;
