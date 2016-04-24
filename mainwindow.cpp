@@ -327,6 +327,7 @@ void MainWindow::RenderFragmentListDetail(const QString &name){
     for(int j=0;j<CommonFragments[i].fragments.size();j++){
         list1<<QString::fromStdString(CommonFragments[i].fragments[j]);
     }
+    ui->listWidget_2->clear();
     ui->listWidget_2->addItems(list1);
 }
 
