@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     dialogcustomtask_fragment.cpp \
     dialogcustomtask_pair.cpp \
     dialogaboutme.cpp \
-    daemonworker.cpp
+    daemonworker.cpp \
+    daemontask.cpp
 
 HEADERS  += mainwindow.h \
     dialogsettingproperties.h \
@@ -30,7 +31,8 @@ HEADERS  += mainwindow.h \
     dialogcustomtask_pair.h \
     dialogaboutme.h \
     datadef.h \
-    daemonworker.h
+    daemonworker.h \
+    daemontask.h
 
 FORMS    += mainwindow.ui \
     dialogsettingproperties.ui \

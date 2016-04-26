@@ -10,6 +10,7 @@
 #include <QDir>
 #include "qmessagebox.h"
 #include "daemonworker.h"
+#include "daemontask.h"
 #include <QTime>
 #include "QStandardItemModel"
 
@@ -159,150 +160,10 @@ void MainWindow::test(){
     string tempInt;
     newstr>>tempInt;
     newstr.clear();
-    //ui->lineEdit->setText(QString::fromStdString(tempInt));
-    string s = "";
-    GenusCollection collection = worker.LoadTargetGenus(config.sourceGenus,config.targetGenus);
-    /*
-    for(int i=0;i<collection.genus.size();i++){
-        Genus currentGenus = collection.genus[i];
-        for(int j=0;j<currentGenus.species.size();j++){
-            Species currentSpecies = currentGenus.species[j];
-            stringstream newstr;
-            string tempInt;
-            newstr<<currentGenus.species.size();
-            newstr>>tempInt;
-            s += currentSpecies.name +"\n";
-            //ui->plainTextEdit->setPlainText(QString::fromStdString(currentSpecies.name+ tempInt +"\n")+ui->plainTextEdit->toPlainText());
-        }
-    }
-    */
-    ui->lineEdit->setText(QString::fromStdString("Computing"));
-    QApplication::processEvents();
-    //ui->plainTextEdit->setPlainText(QString::fromStdString(currentGenus.species[3].name+"\n"+currentGenus.species[3].fragment));
-    //SimpleGenusCollection sourceGnenus = worker.LoadSimpleSourceGenus(config.sourceGenus);
-    //ui->plainTextEdit->setPlainText(QString::fromStdString(sourceGnenus.genus[1].name+"\n"+sourceGnenus.genus[1].fragment));
-    SimpleGenusCollection x = worker.LoadSimpleSourceGenus(config.sourceGenus);
-    CommonFragments = worker.GetCommonFragmentFromGenus(collection,x,config.fragmentCoverage);
-    //vector <string> CommonFragment = worker.GetCommonFragmentFromSpecificGenus(currentGenus,x,config.fragmentCoverage); //GetCommonFragment(currentSpecies.fragment,currentGenus.species[4].fragment,config.fragmentLengthBottom,config.fragmentLengthTop);
-    ui->lineEdit->setText(QString::fromStdString("Rendering"));
-    long t =time.elapsed();
-    newstr<<t;
-    newstr>>tempInt;
-    newstr.clear();
-    ui->lineEdit->setText(QString::fromStdString(tempInt+"ms"));
-    QApplication::processEvents();
+    DaemonTask *t=new DaemonTask();
+    connect(t, SIGNAL(signal_complete_proccess(QString)), this, SLOT(set_complete_proccess(QString)));
+    t->start();
 
-    for(int i=0;i<CommonFragments.size();i++){
-        vector <string> tempString = CommonFragments[i].fragments;
-        s+=CommonFragments[i].name+"\n";
-        for(int j=0;j<tempString.size();j++){
-            s+=tempString[j]+"\n";
-        }
-    }
-
-    //ui->lineEdit->setText(QString::fromStdString("Success"));
-
-    ui->plainTextEdit->setPlainText(QString::fromStdString(s));
-    QApplication::processEvents();
-    newstr<<CommonFragments.size();
-    newstr>>tempInt;
-    QTime time2;
-    time2.start();
-    genusPrimerPairRegular = worker.MakePair(collection,CommonFragments,config.productLengthBottom,config.productLengthTop);
-    int num = genusPrimerPairRegular.size();
-    long t2 = time2.elapsed();
-    newstr<<t2;
-    newstr>>tempInt;
-    newstr.clear();
-    ui->lineEdit->setText(ui->lineEdit->text()+QString::fromStdString(" | "+tempInt+"ms"));
-
-    //worker.GetFragmentPosFromSpecificGenus()
-    //ui->plainTextEdit->setPlainText(QString::fromStdString(currentSpecies.fragment+"\n\n"+currentGenus.species[2].fragment));
-
-    QDir *temp = new QDir;
-        bool exist = temp->exists(QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/filtered")));
-        if(exist){
-
-        }else
-        {
-            bool ok = temp->mkdir(QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/filtered")));
-        }
-        if(!temp->exists(QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/paired")))){
-            temp->mkdir(QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/paired")));
-        }
-        if(!temp->exists(QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/result")))){
-            temp->mkdir(QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/result")));
-        }
-        for(int i=0;i<CommonFragments.size();i++){
-            ofstream ofile;
-            QString filename = QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/filtered/"+ CommonFragments[i].name.substr(0,CommonFragments[i].name.length()-3)));
-            ofile.open(filename.toStdString().c_str());
-            string tempstr;
-            for(int j=0;j<CommonFragments[i].fragments.size();j++){
-                tempstr+=CommonFragments[i].fragments[j]+"\n";
-            }
-            ofile << tempstr;
-            ofile.close();
-        }
-        for(int i=0;i<genusPrimerPairRegular.size();i++){
-            ofstream ofile;
-            QString filename = QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/paired/"+ genusPrimerPairRegular[i].name.substr(0,genusPrimerPairRegular[i].name.length()-3)));
-            ofile.open(filename.toStdString().c_str());
-            string tempstr2;
-            GenusPrimerPair tempPair = genusPrimerPairRegular[i];
-            for(int j=0;j<tempPair.pairs.size();j++){
-                string pos1,pos2,length1,length2;
-                newstr<<tempPair.pairs[j].pos1;
-                newstr>>pos1;
-                newstr.clear();
-                newstr<<tempPair.pairs[j].pos2;
-                newstr>>pos2;
-                newstr.clear();
-                newstr<<tempPair.pairs[j].length1;
-                newstr>>length1;
-                newstr.clear();
-                newstr<<tempPair.pairs[j].length2;
-                newstr>>length2;
-                newstr.clear();
-                tempstr2+=tempPair.pairs[j].fragment1+"\t\t"+pos1+"\t\t"
-                        +length1+"\t\t"+tempPair.pairs[j].fragment2+"\t\t"
-                        +pos2+"\t\t"+length2+"\n";
-            }
-            ofile << tempstr2;
-            ofile.close();
-        }
-        genusPrimerPairRegular = worker.FilterFragment(genusPrimerPairRegular);
-
-        for(int i=0;i<genusPrimerPairRegular.size();i++){
-            ofstream ofile;
-            QString filename = QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/result/"+ genusPrimerPairRegular[i].name.substr(0,genusPrimerPairRegular[i].name.length()-3)));
-            ofile.open(filename.toStdString().c_str());
-            string tempstr2;
-            GenusPrimerPair tempPair = genusPrimerPairRegular[i];
-            for(int j=0;j<tempPair.pairs.size();j++){
-                string pos1,pos2,length1,length2;
-                newstr<<tempPair.pairs[j].pos1;
-                newstr>>pos1;
-                newstr.clear();
-                newstr<<tempPair.pairs[j].pos2;
-                newstr>>pos2;
-                newstr.clear();
-                newstr<<tempPair.pairs[j].length1;
-                newstr>>length1;
-                newstr.clear();
-                newstr<<tempPair.pairs[j].length2;
-                newstr>>length2;
-                newstr.clear();
-                tempstr2+=tempPair.pairs[j].fragment1+"\t\t"+pos1+"\t\t"
-                        +length1+"\t\t"+tempPair.pairs[j].fragment2+"\t\t"
-                        +pos2+"\t\t"+length2+"\n";
-            }
-            ofile << tempstr2;
-            ofile.close();
-        }
-        //int mmm=genusPrimerPairRegularx.size();
-        RenderFragmentList(CommonFragments);
-        RenderRegularPairList(genusPrimerPairRegular);
 }
 
 
@@ -398,4 +259,106 @@ void MainWindow::RenderRegularPairListDetail(const QString &name){
 void MainWindow::on_listWidget_3_currentTextChanged(const QString &currentText)
 {
     RenderRegularPairListDetail(currentText);
+}
+
+void MainWindow::set_complete_proccess(QString){
+
+
+    string s = "";
+    stringstream newstr;
+    for(int i=0;i<CommonFragments.size();i++){
+        vector <string> tempString = CommonFragments[i].fragments;
+        s+=CommonFragments[i].name+"\n";
+        for(int j=0;j<tempString.size();j++){
+            s+=tempString[j]+"\n";
+        }
+    }
+
+    //ui->lineEdit->setText(QString::fromStdString("Success"));
+
+    ui->plainTextEdit->setPlainText(QString::fromStdString(s));
+    QApplication::processEvents();
+    QDir *temp = new QDir;
+        bool exist = temp->exists(QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/filtered")));
+        if(exist){
+
+        }else
+        {
+            bool ok = temp->mkdir(QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/filtered")));
+        }
+        if(!temp->exists(QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/paired")))){
+            temp->mkdir(QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/paired")));
+        }
+        if(!temp->exists(QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/result")))){
+            temp->mkdir(QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/result")));
+        }
+        for(int i=0;i<CommonFragments.size();i++){
+            ofstream ofile;
+            QString filename = QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/filtered/"+ CommonFragments[i].name.substr(0,CommonFragments[i].name.length()-3)));
+            ofile.open(filename.toStdString().c_str());
+            string tempstr;
+            for(int j=0;j<CommonFragments[i].fragments.size();j++){
+                tempstr+=CommonFragments[i].fragments[j]+"\n";
+            }
+            ofile << tempstr;
+            ofile.close();
+        }
+
+        for(int i=0;i<genusPrimerPairRegular.size();i++){
+            ofstream ofile;
+            QString filename = QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/paired/"+ genusPrimerPairRegular[i].name.substr(0,genusPrimerPairRegular[i].name.length()-3)));
+            ofile.open(filename.toStdString().c_str());
+            string tempstr2;
+            GenusPrimerPair tempPair = genusPrimerPairRegular[i];
+            for(int j=0;j<tempPair.pairs.size();j++){
+                string pos1,pos2,length1,length2;
+                newstr<<tempPair.pairs[j].pos1;
+                newstr>>pos1;
+                newstr.clear();
+                newstr<<tempPair.pairs[j].pos2;
+                newstr>>pos2;
+                newstr.clear();
+                newstr<<tempPair.pairs[j].length1;
+                newstr>>length1;
+                newstr.clear();
+                newstr<<tempPair.pairs[j].length2;
+                newstr>>length2;
+                newstr.clear();
+                tempstr2+=tempPair.pairs[j].fragment1+"\t\t"+pos1+"\t\t"
+                        +length1+"\t\t"+tempPair.pairs[j].fragment2+"\t\t"
+                        +pos2+"\t\t"+length2+"\n";
+            }
+            ofile << tempstr2;
+            ofile.close();
+        }
+        for(int i=0;i<genusPrimerPairRegular.size();i++){
+            ofstream ofile;
+            QString filename = QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/result/"+ genusPrimerPairRegular[i].name.substr(0,genusPrimerPairRegular[i].name.length()-3)));
+            ofile.open(filename.toStdString().c_str());
+            string tempstr2;
+            GenusPrimerPair tempPair = genusPrimerPairRegular[i];
+            for(int j=0;j<tempPair.pairs.size();j++){
+                string pos1,pos2,length1,length2;
+                newstr<<tempPair.pairs[j].pos1;
+                newstr>>pos1;
+                newstr.clear();
+                newstr<<tempPair.pairs[j].pos2;
+                newstr>>pos2;
+                newstr.clear();
+                newstr<<tempPair.pairs[j].length1;
+                newstr>>length1;
+                newstr.clear();
+                newstr<<tempPair.pairs[j].length2;
+                newstr>>length2;
+                newstr.clear();
+                tempstr2+=tempPair.pairs[j].fragment1+"\t\t"+pos1+"\t\t"
+                        +length1+"\t\t"+tempPair.pairs[j].fragment2+"\t\t"
+                        +pos2+"\t\t"+length2+"\n";
+            }
+            ofile << tempstr2;
+            ofile.close();
+        }
+        //int mmm=genusPrimerPairRegularx.size();
+        RenderFragmentList(CommonFragments);
+        RenderRegularPairList(genusPrimerPairRegular);
 }

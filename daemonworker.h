@@ -3,9 +3,8 @@
 #include "datadef.h"
 #include<fstream>
 #include<sstream>
-#include <QThread>
 using namespace std;
-class DaemonWorker: public QThread
+class DaemonWorker
 {
 public:
     string method;

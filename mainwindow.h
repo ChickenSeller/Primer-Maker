@@ -53,6 +53,8 @@ private slots:
 
     void on_listWidget_3_currentTextChanged(const QString &currentText);
 
+    void set_complete_proccess(QString);
+
 private:
     Ui::MainWindow *ui;
 };
