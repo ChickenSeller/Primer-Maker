@@ -14,6 +14,9 @@
 #include <QTime>
 #include "QStandardItemModel"
 
+string currentdoing;
+float totalwork;
+float workdone;
 Config config;
 int timer;
 vector <CommonFragment> CommonFragments;

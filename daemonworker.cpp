@@ -2,12 +2,18 @@
 #include <QDir>
 #include <QDebug>
 
+extern string currentdoing;
+extern float totalwork;
+extern float workdone;
+
 DaemonWorker::DaemonWorker()
 {
 
 }
 //加载目标属
 GenusCollection DaemonWorker::LoadTargetGenus(string filePath,string targetFileName){//filepath==环境属文件夹 target==目标属文件路径
+    currentdoing = "正在加载目标属";
+    totalwork = 0;
     if(filePath==""){
         throw "NULL_PATH";
     }
@@ -21,6 +27,8 @@ GenusCollection DaemonWorker::LoadTargetGenus(string filePath,string targetFileN
     }
     GenusCollection currentCollection;
     TargetGenusList targetGenusList=GetTargetGenusList(targetFileName);
+    totalwork = targetGenusList.genus.size();
+    workdone = 0;
     for(int j=0;j<targetGenusList.genus.size();j++){
         for(int i=2;i<fileInfo->count();i++){
             if(fileInfo->at(i).fileName().toStdString()==targetGenusList.genus[j]){
@@ -29,11 +37,14 @@ GenusCollection DaemonWorker::LoadTargetGenus(string filePath,string targetFileN
                 break;
             }
         }
+        workdone++;
     }
     return currentCollection;
 }
 //加载环境属
 SimpleGenusCollection DaemonWorker::LoadSimpleSourceGenus(string filePath){
+    currentdoing = "正在加载环境属";
+    totalwork = 0;
     if(filePath==""){
         throw "NULL_PATH";
     }
@@ -46,6 +57,8 @@ SimpleGenusCollection DaemonWorker::LoadSimpleSourceGenus(string filePath){
         throw "NULL_PATH";
     }
     SimpleGenusCollection currentCollection;
+    totalwork = fileInfo->count() - 2;
+    workdone = 0;
     for(int i=2;i<fileInfo->count();i++){
         ifstream sourceFile;
         sourceFile.open(fileInfo->at(i).filePath().toStdString().c_str());
@@ -59,6 +72,7 @@ SimpleGenusCollection DaemonWorker::LoadSimpleSourceGenus(string filePath){
         tempSpecies.fragment = fileContent;
         tempSpecies.name = fileInfo->at(i).fileName().toStdString();
         currentCollection.genus.push_back(tempSpecies);
+        workdone++;
     }
     return currentCollection;
 }
@@ -211,10 +225,14 @@ vector <string> DaemonWorker::GetCommonFragmentFromSpecificGenus(Genus genus, Si
     vector <string> tempCommonFragment;
     int PctSpeciesNum;
     PctSpeciesNum = ceil(genus.species.size() * (1 - (float)coverage / 100));
+    currentdoing = "正在获取" + genus.name + "内的特征片段";
+    totalwork = PctSpeciesNum * PctSpeciesNum;
+    workdone = 0;
     if(PctSpeciesNum == 1){
         tempCommonFragment = GetCommonFragment(genus.species[0].fragment,genus.species[0].fragment,config.fragmentLengthBottom,config.fragmentLengthTop);
         rawCommonFragment.insert(rawCommonFragment.end(),tempCommonFragment.begin(),tempCommonFragment.end());
         rawCommonFragment = Unique(rawCommonFragment);
+        workdone++;
     }
     else{
         for(int i = 0; i < PctSpeciesNum; i++){
@@ -222,6 +240,7 @@ vector <string> DaemonWorker::GetCommonFragmentFromSpecificGenus(Genus genus, Si
                 tempCommonFragment = GetCommonFragment(genus.species[i].fragment,genus.species[j].fragment,config.fragmentLengthBottom,config.fragmentLengthTop);
                 rawCommonFragment.insert(rawCommonFragment.end(),tempCommonFragment.begin(),tempCommonFragment.end());
                 rawCommonFragment = Unique(rawCommonFragment);
+                workdone++;
             }
         }
     }
@@ -273,11 +292,9 @@ bool DaemonWorker::IfSpecific(string fragment, SimpleGenusCollection sourceGenus
             continue;
        }
        if(sourceGenus.genus[i].fragment.find(fragment)!=string::npos){
-            //timer++;
             return false;
         }
     }
-    timer++;
     return true;
 }
 //获取指定属的特征片段位置
@@ -297,36 +314,37 @@ vector <FragmentPair> DaemonWorker::GetFragmentPosFromSpecificGenus(string speci
     sort(result.begin(),result.end());
     return result;
 }
-//获取引物对位置
+//按特征片段位置获取引物对
 vector <PairInfo> DaemonWorker::Pair(vector<FragmentPair> in, int MIN, int MAX){
-        int num;
-        num = in.size();
-        vector<PairInfo> ans;
-        int i, j;
-        int t1, t2;
-        t1 = t2 = 0;
-        for(i = 0; i <= num - 2; i++){
-            while(in[t1].posA < in[i].posA + MIN){
-                t1++;
-                if(t1 >= num - 1)return ans;
-            }
-            if(in[t1].posA > in[i].posA + MAX){continue;}
-            if(t2 < t1)t2 = t1;
-            while(t2 < num - 1 && in[t2+1].posA < in[i].posA + MAX){
-                t2++;
-            }
-            for(j = t1; j <= t2; j++){
-                ans.push_back(PairInfo(in[i].posA, in[i].posB, in[j].posA, in[j].posB,in[i].fragment,in[j].fragment));
-                //cout << in[i].posA << ' ' << in[j].posA <<endl;
-            }
+    int num;
+    num = in.size();
+    vector<PairInfo> res;
+    int i, j;
+    int t1, t2;
+    t1 = t2 = 0;
+    for(i = 0; i <= num - 2; i++){
+        while(in[t1].posA < in[i].posA + MIN){
+            t1++;
+            if(t1 >= num - 1)return res;
         }
-        return ans;
+        if(in[t1].posA > in[i].posA + MAX){continue;}
+        if(t2 < t1)t2 = t1;
+        while(t2 < num - 1 && in[t2+1].posA < in[i].posA + MAX){
+            t2++;
+        }
+        for(j = t1; j <= t2; j++){
+            res.push_back(PairInfo(in[i].posA, in[i].posB, in[j].posA, in[j].posB,in[i].fragment,in[j].fragment));
+        }
+    }
+    return res;
 }
-//
+//获取所有引物对
 vector <GenusPrimerPair> DaemonWorker::MakePair(GenusCollection targetGenus, vector <CommonFragment> commonFragmentCollection, int MIN, int MAX){
+    currentdoing = "正在匹配引物对";
+    totalwork = targetGenus.genus.size();
+    workdone = 0;
     vector <GenusPrimerPair> result;
     for(int i=0 ;i<targetGenus.genus.size();i++){
-
         int k=0;
         for(k=0;k<commonFragmentCollection.size();k++){
             if(commonFragmentCollection[k].name==targetGenus.genus[i].name){
@@ -336,9 +354,11 @@ vector <GenusPrimerPair> DaemonWorker::MakePair(GenusCollection targetGenus, vec
         }
         GenusPrimerPair tempGenusPrimePair = MakePairInSpecificGenus(targetGenus.genus[i],commonFragmentCollection[k], MIN, MAX);
         result.push_back(tempGenusPrimePair);
+        workdone++;
     }
     return result;
 }
+//在特定属内获取引物对
 GenusPrimerPair DaemonWorker::MakePairInSpecificGenus(Genus targetGenus, CommonFragment commonFragmentCollection, int MIN, int MAX){
     GenusPrimerPair tempGenusPrimePair;
     tempGenusPrimePair.name = targetGenus.name;
