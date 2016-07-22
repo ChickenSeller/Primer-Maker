@@ -1,4 +1,4 @@
-#include "daemonworker.h"
+﻿#include "daemonworker.h"
 #include <QDir>
 #include <QDebug>
 
@@ -376,7 +376,7 @@ GenusPrimerPair DaemonWorker::MakePairInSpecificGenus(Genus targetGenus, CommonF
     }
     return tempGenusPrimePair;
 }
-
+//判定温度
 bool DaemonWorker::IfTmDiff(string strA, string strB, int t){
     int length;
     int d1, d2, i;
@@ -400,7 +400,7 @@ bool DaemonWorker::IfTmDiff(string strA, string strB, int t){
     else
         return false;
 }
-
+//判定重复
 bool DaemonWorker::IfRepeat(string str, int num){
     string a, t, c, g;
     a = t = c = g = "";
@@ -414,7 +414,7 @@ bool DaemonWorker::IfRepeat(string str, int num){
     if(str.find(a) != -1 || str.find(t) != -1 || str.find(c) != -1 || str.find(g) != -1)return false;
     return true;
 }
-
+//判定发卡结构
 bool DaemonWorker::IfHairpinStructure(string str, int num){
     int length, i, j;
     string temp1;
@@ -434,7 +434,7 @@ bool DaemonWorker::IfHairpinStructure(string str, int num){
     }
     return true;
 }
-
+//判定二聚体
 bool DaemonWorker::IfDimer(string strA, string strB, int num){
     int length, i;
     length = strA.length();
@@ -445,7 +445,7 @@ bool DaemonWorker::IfDimer(string strA, string strB, int num){
     }
     return true;
 }
-
+//字符串反向互补
 void DaemonWorker::Reverse(string &str){
         int length, i;
         string temp;
@@ -460,39 +460,87 @@ void DaemonWorker::Reverse(string &str){
         }
         str = temp;
 }
-
-vector <GenusPrimerPair> DaemonWorker::FilterFragment(vector<GenusPrimerPair> source){
+//判断合格与否
+bool DaemonWorker::JudgeStringPair(string strA, string strB){
+    if(!IfTmDiff(strA,strB,5)){
+        return false;
+    }
+    if(!IfRepeat(strA,4)){
+        return false;
+    }
+    if(!IfRepeat(strB,4)){
+        return false;
+    }
+    if(!IfHairpinStructure(strA,4)){
+        return false;
+    }
+    if(!IfHairpinStructure(strB,4)){
+        return false;
+    }
+    if(!IfDimer(strA,strB,4)){
+        return false;
+    }
+    return true;
+}
+//筛选
+vector <GenusPrimerPair> DaemonWorker::FilterFragment(vector<GenusPrimerPair> source, vector<GenusNotPaired> &res){
     vector <GenusPrimerPair> result;
+    vector <GenusNotPaired> nopairresult;
     for(int i=0;i<source.size();i++){
         GenusPrimerPair tempGenusPrimerPair;
         tempGenusPrimerPair.name = source[i].name;
         for(int j=0;j<source[i].pairs.size();j++){
             PairInfo tempPairInfo=source[i].pairs[j];
-            if(!IfTmDiff(tempPairInfo.fragment1,tempPairInfo.fragment2,5)){
-                continue;
-            }
-            if(!IfRepeat(tempPairInfo.fragment1,3)){
-                continue;
-            }
-            if(!IfRepeat(tempPairInfo.fragment2,3)){
-                continue;
-            }
-            if(!IfHairpinStructure(tempPairInfo.fragment1,4)){
-                continue;
-            }
-            if(!IfHairpinStructure(tempPairInfo.fragment2,4)){
-                continue;
-            }
-            if(!IfDimer(tempPairInfo.fragment1,tempPairInfo.fragment2,4)){
+            if(!JudgeStringPair(tempPairInfo.fragment1,tempPairInfo.fragment2)){
                 continue;
             }
             Reverse(tempPairInfo.fragment2);
             tempGenusPrimerPair.pairs.push_back(tempPairInfo);
         }
+        if(tempGenusPrimerPair.pairs.size()==0){
+            GenusNotPaired temp;
+            temp.name = source[i].name;
+            temp.num = i;
+            nopairresult.push_back(temp);
+        }
         result.push_back(tempGenusPrimerPair);
+    }
+    res = nopairresult;
+    return result;
+}
+//补全
+vector <GenusPrimerPair> DaemonWorker::PairTheLone(GenusCollection targetGenus, vector <CommonFragment> commonFragmentCollection, vector<GenusNotPaired> res){
+    vector <GenusPrimerPair> result;
+    GenusPrimerPair tempPair;
+    int totalnum = res.size();
+    for(int i = 0; i <= totalnum - 1; i++){
+        Genus thisgenus = targetGenus.genus[res[i].num];
+        CommonFragment thisFragments = commonFragmentCollection[res[i].num];
+        tempPair.name = thisFragments.name;
+        int FraNum = thisFragments.fragments.size();
+        for(int j = 0; j <= FraNum - 1; j++){
+            int speciesnum = thisgenus.species.size();
+            for(int k = 0; k <= speciesnum - 1; k++){
+                int pos = thisgenus.species[k].fragment.find(thisFragments.fragments[j]);
+                if(pos != -1 && pos + 230 < thisgenus.species[k].fragment.length()){
+                    tempPair.pairs.push_back(PairInfo(-1,-1,-1,-1,thisFragments.fragments[j],thisgenus.species[k].fragment.substr(pos+200,20)));
+                    tempPair.pairs.push_back(PairInfo(-1,-1,-1,-1,thisFragments.fragments[j],thisgenus.species[k].fragment.substr(pos+200,21)));
+                    tempPair.pairs.push_back(PairInfo(-1,-1,-1,-1,thisFragments.fragments[j],thisgenus.species[k].fragment.substr(pos+200,22)));
+                    tempPair.pairs.push_back(PairInfo(-1,-1,-1,-1,thisFragments.fragments[j],thisgenus.species[k].fragment.substr(pos+200,23)));
+                    tempPair.pairs.push_back(PairInfo(-1,-1,-1,-1,thisFragments.fragments[j],thisgenus.species[k].fragment.substr(pos+200,24)));
+                    tempPair.pairs.push_back(PairInfo(-1,-1,-1,-1,thisFragments.fragments[j],thisgenus.species[k].fragment.substr(pos+200,25)));
+                    tempPair.pairs.push_back(PairInfo(-1,-1,-1,-1,thisFragments.fragments[j],thisgenus.species[k].fragment.substr(pos+200,26)));
+                    tempPair.pairs.push_back(PairInfo(-1,-1,-1,-1,thisFragments.fragments[j],thisgenus.species[k].fragment.substr(pos+200,27)));
+                    tempPair.pairs.push_back(PairInfo(-1,-1,-1,-1,thisFragments.fragments[j],thisgenus.species[k].fragment.substr(pos+200,28)));
+                    tempPair.pairs.push_back(PairInfo(-1,-1,-1,-1,thisFragments.fragments[j],thisgenus.species[k].fragment.substr(pos+200,29)));
+                }
+            }
+        }
+        result.push_back(tempPair);
     }
     return result;
 }
+
 void DaemonWorker::run(){
     /*
     switch(method){

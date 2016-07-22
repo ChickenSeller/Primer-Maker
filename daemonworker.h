@@ -31,8 +31,10 @@ public:
     bool IfRepeat(string str,int num);
     bool IfHairpinStructure(string str,int num);
     bool IfDimer(string strA,string strB,int num);
-    void Reverse(string &in);
-    vector <GenusPrimerPair> FilterFragment(vector <GenusPrimerPair> source);
+    void Reverse(string &str);
+    bool JudgeStringPair(string strA, string strB);
+    vector <GenusPrimerPair> FilterFragment(vector <GenusPrimerPair> source, vector <GenusNotPaired> &res);
+    vector <GenusPrimerPair> PairTheLone(GenusCollection targetGenus, vector <CommonFragment> commonFragmentCollection, vector<GenusNotPaired> res);
     //vector <string> GetGenusCommonFragment()
 protected:
     void run();

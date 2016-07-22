@@ -115,7 +115,11 @@ public:
     string name;
     vector <PairInfo> pairs;
 };
-
+class GenusNotPaired{
+public:
+    string name;
+    int num;
+};
 
 extern int timer;
 extern Config config;
