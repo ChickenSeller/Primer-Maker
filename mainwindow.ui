@@ -30,23 +30,13 @@
      <attribute name="title">
       <string>首页</string>
      </attribute>
-     <widget class="QLineEdit" name="lineEdit">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>601</width>
-        <height>16</height>
-       </rect>
-      </property>
-     </widget>
      <widget class="QPlainTextEdit" name="plainTextEdit">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>30</y>
+        <y>10</y>
         <width>1281</width>
-        <height>551</height>
+        <height>571</height>
        </rect>
       </property>
       <property name="verticalScrollBarPolicy">

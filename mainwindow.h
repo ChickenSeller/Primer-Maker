@@ -34,6 +34,8 @@ public:
     void RenderRegularPairList(vector <GenusPrimerPair> &genusPrimerPair);
     void RenderRegularPairListDetail(const QString & name);
     void RenderFragmentListDetail(const QString & name);
+    void RenderRegularPairExtList(vector <GenusPrimerPair> &genusPrimerPair);
+    void RenderRegularPairExtListDetail(const QString & name);
 
 
 
@@ -55,6 +57,8 @@ private slots:
 
     void set_complete_proccess(QString);
     void set_status(QString);
+
+    void on_listWidget_4_currentTextChanged(const QString &currentText);
 
 private:
     Ui::MainWindow *ui;

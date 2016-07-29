@@ -6,7 +6,7 @@ extern float workdone;
 
 DaemonTask::DaemonTask()
 {
-    totalwork=0;
+
 }
 DaemonTask::~DaemonTask()
 {
@@ -26,6 +26,7 @@ void DaemonTask::run(){
     vector <GenusPrimerPair> lonepair;
     lonepair = worker->PairTheLone(collection,CommonFragments,res);
     lonepair = worker->FilterFragment(lonepair, res);
+    genusPrimerPairExt=lonepair;
     emit signal_complete_proccess("OK");
 }
 

@@ -10,7 +10,7 @@ DaemonWorker::DaemonWorker()
 {
 
 }
-//加载目标属
+//加载目标属     已显示进度
 GenusCollection DaemonWorker::LoadTargetGenus(string filePath,string targetFileName){//filepath==环境属文件夹 target==目标属文件路径
     currentdoing = "正在加载目标属";
     emit signal_worker_status(QString::fromStdString(currentdoing));
@@ -43,7 +43,7 @@ GenusCollection DaemonWorker::LoadTargetGenus(string filePath,string targetFileN
     }
     return currentCollection;
 }
-//加载环境属
+//加载环境属     已显示进度
 SimpleGenusCollection DaemonWorker::LoadSimpleSourceGenus(string filePath){
     currentdoing = "正在加载环境属";
     emit signal_worker_status(QString::fromStdString(currentdoing));
@@ -223,7 +223,7 @@ vector <CommonFragment> DaemonWorker::GetCommonFragmentFromGenus(GenusCollection
     }
     return commonFragments;
 }
-//获取指定属特征片段
+//获取指定属特征片段     已显示进度
 vector <string> DaemonWorker::GetCommonFragmentFromSpecificGenus(Genus genus, SimpleGenusCollection sourceGenus, int coverage){
     vector <string> rawCommonFragment;
     vector <string> commonFragment;
@@ -262,23 +262,21 @@ vector <string> DaemonWorker::GetCommonFragmentFromSpecificGenus(Genus genus, Si
     ostr<<str2;
     ostr.close();*/
     rawCommonFragment = Unique(rawCommonFragment);
-
+    emit signal_worker_status(QString::fromStdString("正在计算属"+genus.name+"中的片段覆盖率"));
     for(int i=0;i<rawCommonFragment.size();i++){
         //commonFragment.push_back(rawCommonFragment[i]);
         if(GetCoverage(rawCommonFragment[i],genus)>=coverage){
             commonFragment.push_back(rawCommonFragment[i]);
         }
-
     }
-
     rawCommonFragment.clear();
+    emit signal_worker_status(QString::fromStdString("正在判定属"+genus.name+"中的特征片段"));
     for(int i=0;i<commonFragment.size();i++){
-
         if(IfSpecific(commonFragment[i],sourceGenus,genus)){
             rawCommonFragment.push_back(commonFragment[i]);
+
         }
     }
-
     return Unique(rawCommonFragment);
 }
 //计算片段覆盖率
@@ -296,6 +294,7 @@ int DaemonWorker::GetCoverage(string fragment, Genus genus){
 }
 //判定是否为特征片段，属外查找
 bool DaemonWorker::IfSpecific(string fragment, SimpleGenusCollection sourceGenus,Genus targetGenus){
+    //emit signal_worker_status(QString::fromStdString("正在判定片段"+fragment+"是否为特征片段"));
     for(int i=0;i<sourceGenus.genus.size();i++){
        if(sourceGenus.genus[i].name == targetGenus.name){
             continue;
@@ -309,6 +308,7 @@ bool DaemonWorker::IfSpecific(string fragment, SimpleGenusCollection sourceGenus
 //获取指定属的特征片段位置
 vector <FragmentPair> DaemonWorker::GetFragmentPosFromSpecificGenus(string species, vector<string> fragments){
     vector <FragmentPair> result;
+    //emit signal_worker_status(QString::fromStdString("正在计算种"+species+"中的片段覆盖率"));
     for(int i=0;i<fragments.size();i++){
         size_t pos = species.find(fragments[i]);
         if(pos==string::npos){
@@ -370,9 +370,11 @@ vector <GenusPrimerPair> DaemonWorker::MakePair(GenusCollection targetGenus, vec
 //在特定属内获取引物对
 GenusPrimerPair DaemonWorker::MakePairInSpecificGenus(Genus targetGenus, CommonFragment commonFragmentCollection, int MIN, int MAX){
     GenusPrimerPair tempGenusPrimePair;
+    emit signal_worker_status(QString::fromStdString("正在计算属"+targetGenus.name+"中的引物对"));
     tempGenusPrimePair.name = targetGenus.name;
     for(int j=0;j<targetGenus.species.size();j++){
         //vector <string> tempCommonFragmentInSpecificSpecies;
+        emit signal_worker_status(QString::fromStdString("正在寻找种"+targetGenus.species[j].name+"中的引物对"));
         vector <FragmentPair> tempPos = GetFragmentPosFromSpecificGenus(targetGenus.species[j].fragment,commonFragmentCollection.fragments);
         if(tempPos.size()==0){
             continue;
@@ -495,9 +497,11 @@ bool DaemonWorker::JudgeStringPair(string strA, string strB){
 vector <GenusPrimerPair> DaemonWorker::FilterFragment(vector<GenusPrimerPair> source, vector<GenusNotPaired> &res){
     vector <GenusPrimerPair> result;
     vector <GenusNotPaired> nopairresult;
+    emit signal_worker_status(QString::fromStdString("正在筛选引物对"));
     for(int i=0;i<source.size();i++){
         GenusPrimerPair tempGenusPrimerPair;
         tempGenusPrimerPair.name = source[i].name;
+        emit signal_worker_status(QString::fromStdString("正在筛选属"+tempGenusPrimerPair.name+"中的引物对"));
         for(int j=0;j<source[i].pairs.size();j++){
             PairInfo tempPairInfo=source[i].pairs[j];
             if(!JudgeStringPair(tempPairInfo.fragment1,tempPairInfo.fragment2)){
@@ -511,8 +515,9 @@ vector <GenusPrimerPair> DaemonWorker::FilterFragment(vector<GenusPrimerPair> so
             temp.name = source[i].name;
             temp.num = i;
             nopairresult.push_back(temp);
+        }else{
+            result.push_back(tempGenusPrimerPair);
         }
-        result.push_back(tempGenusPrimerPair);
     }
     res = nopairresult;
     return result;
@@ -521,9 +526,11 @@ vector <GenusPrimerPair> DaemonWorker::FilterFragment(vector<GenusPrimerPair> so
 vector <GenusPrimerPair> DaemonWorker::PairTheLone(GenusCollection targetGenus, vector <CommonFragment> commonFragmentCollection, vector<GenusNotPaired> res){
     vector <GenusPrimerPair> result;
     GenusPrimerPair tempPair;
+    emit signal_worker_status(QString::fromStdString("正在补全引物对"));
     int totalnum = res.size();
     for(int i = 0; i <= totalnum - 1; i++){
         Genus thisgenus = targetGenus.genus[res[i].num];
+        emit signal_worker_status(QString::fromStdString("正在补全属"+thisgenus.name+"中的引物对"));
         CommonFragment thisFragments = commonFragmentCollection[res[i].num];
         tempPair.name = thisFragments.name;
         int FraNum = thisFragments.fragments.size();

@@ -22,6 +22,8 @@ Config config;
 int timer;
 vector <CommonFragment> CommonFragments;
 vector <GenusPrimerPair> genusPrimerPairRegular;
+vector <GenusPrimerPair> genusPrimerPairExt;
+QStandardItemModel *model = new QStandardItemModel;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -29,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     //config = new Config;
     LoadConfig();
+    ui->pushButton_2->setEnabled(false);
     //config.sourceGenus = "text";
     //ui->lineEdit->setText(QString::fromStdString(config.sourceGenus));
     DaemonWorker worker1;
@@ -145,12 +148,21 @@ void MainWindow::LoadConfig(){
             config.sourceGenus = "";
             config.targetGenus = "";
     }
-
-
-    ui->lineEdit->setText(QString::fromStdString(json));
 }
 
 void MainWindow::test(){
+    ui->pushButton_2->setEnabled(false);
+    ui->plainTextEdit->clear();
+    ui->listWidget->reset();
+    ui->listWidget->clear();
+    ui->listWidget_2->reset();
+    ui->listWidget_2->clear();
+    ui->listWidget_3->reset();
+    ui->listWidget_3->clear();
+    ui->listWidget_4->reset();
+    ui->listWidget_4->clear();
+    model->clear();
+    //ui->tableView->clea
     QTime time;
     time.start();
     QDir *dir = new QDir(QString::fromStdString(config.sourceGenus));
@@ -215,10 +227,64 @@ void MainWindow::RenderRegularPairList(vector<GenusPrimerPair> &genusPrimerPair)
         ui->listWidget_3->addItem(QString::fromStdString(genusPrimerPair[i].name));
     }
 }
+
+void MainWindow::RenderRegularPairExtList(vector <GenusPrimerPair> &genusPrimerPair){
+    for(int i=0;i<genusPrimerPair.size();i++){
+        ui->listWidget_4->addItem(QString::fromStdString(genusPrimerPair[i].name));
+    }
+}
+
+void MainWindow::RenderRegularPairExtListDetail(const QString &name){
+    ui->tableView->setEditTriggers(QTableView::NoEditTriggers);
+    ui->tableView->setSelectionBehavior(QTableView::SelectRows);
+
+     model->setColumnCount(6);
+     model->setHeaderData(0,Qt::Horizontal,tr("引物1序列"));
+     model->setHeaderData(1,Qt::Horizontal,tr("引物1头部位置"));
+     model->setHeaderData(2,Qt::Horizontal,tr("引物1长度"));
+     model->setHeaderData(3,Qt::Horizontal,tr("引物2序列"));
+     model->setHeaderData(4,Qt::Horizontal,tr("引物2头部位置"));
+     model->setHeaderData(5,Qt::Horizontal,tr("引物2长度"));
+
+
+    int i=0;
+    for(i=0;i<genusPrimerPairExt.size();i++){
+        if(name==QString::fromStdString(genusPrimerPairExt[i].name)){
+            break;
+        }
+    }
+    for(int j=0;j<genusPrimerPairExt[i].pairs.size();j++){
+        stringstream newstr;
+        string pos1,pos2,length1,length2;
+        newstr<<genusPrimerPairExt[i].pairs[j].pos1;
+        newstr>>pos1;
+        newstr.clear();
+        newstr<<genusPrimerPairExt[i].pairs[j].pos2;
+        newstr>>pos2;
+        newstr.clear();
+        newstr<<genusPrimerPairExt[i].pairs[j].length1;
+        newstr>>length1;
+        newstr.clear();
+        newstr<<genusPrimerPairExt[i].pairs[j].length2;
+        newstr>>length2;
+        newstr.clear();
+        QStandardItem* item1 = new QStandardItem(tr(genusPrimerPairExt[i].pairs[j].fragment1.c_str()));
+        QStandardItem* item2 = new QStandardItem(tr(pos1.c_str()));
+        QStandardItem* item3 = new QStandardItem(tr(length1.c_str()));
+        QStandardItem* item4 = new QStandardItem(tr(genusPrimerPairExt[i].pairs[j].fragment2.c_str()));
+        QStandardItem* item5 = new QStandardItem(tr(pos2.c_str()));
+        QStandardItem* item6 = new QStandardItem(tr(length2.c_str()));
+        QList<QStandardItem*> item;
+         item << item1 << item2 << item3 << item4 << item5 << item6;
+         model->appendRow(item);
+    }
+    ui->tableView->setModel(model);
+    ui->tableView->resizeColumnsToContents();
+}
+
 void MainWindow::RenderRegularPairListDetail(const QString &name){
     ui->tableView->setEditTriggers(QTableView::NoEditTriggers);
     ui->tableView->setSelectionBehavior(QTableView::SelectRows);
-    QStandardItemModel *model = new QStandardItemModel;
      model->setColumnCount(6);
      model->setHeaderData(0,Qt::Horizontal,tr("引物1序列"));
      model->setHeaderData(1,Qt::Horizontal,tr("引物1头部位置"));
@@ -283,8 +349,7 @@ void MainWindow::set_complete_proccess(QString message){
     */
 
     //ui->lineEdit->setText(QString::fromStdString("Success"));
-
-    ui->plainTextEdit->setPlainText(QString::fromStdString(s));
+    ui->plainTextEdit->setPlainText(QString::fromStdString(s+"\n")+ui->plainTextEdit->toPlainText());
     QApplication::processEvents();
     QDir *temp = new QDir;
         bool exist = temp->exists(QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/filtered")));
@@ -339,6 +404,34 @@ void MainWindow::set_complete_proccess(QString message){
             ofile << tempstr2;
             ofile.close();
         }
+        for(int i=0;i<genusPrimerPairExt.size();i++){
+            ofstream ofile;
+            QString filename = QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/paired/"+ genusPrimerPairExt[i].name.substr(0,genusPrimerPairExt[i].name.length()-3)));
+            ofile.open(filename.toStdString().c_str());
+            string tempstr2;
+            GenusPrimerPair tempPair = genusPrimerPairExt[i];
+            for(int j=0;j<tempPair.pairs.size();j++){
+                string pos1,pos2,length1,length2;
+                newstr<<tempPair.pairs[j].pos1;
+                newstr>>pos1;
+                newstr.clear();
+                newstr<<tempPair.pairs[j].pos2;
+                newstr>>pos2;
+                newstr.clear();
+                newstr<<tempPair.pairs[j].length1;
+                newstr>>length1;
+                newstr.clear();
+                newstr<<tempPair.pairs[j].length2;
+                newstr>>length2;
+                newstr.clear();
+                tempstr2+=tempPair.pairs[j].fragment1+"\t\t"+pos1+"\t\t"
+                        +length1+"\t\t"+tempPair.pairs[j].fragment2+"\t\t"
+                        +pos2+"\t\t"+length2+"\n";
+            }
+            ofile << tempstr2;
+            ofile.close();
+        }
+        /*
         for(int i=0;i<genusPrimerPairRegular.size();i++){
             ofstream ofile;
             QString filename = QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/result/"+ genusPrimerPairRegular[i].name.substr(0,genusPrimerPairRegular[i].name.length()-3)));
@@ -366,11 +459,19 @@ void MainWindow::set_complete_proccess(QString message){
             ofile << tempstr2;
             ofile.close();
         }
+        */
         //int mmm=genusPrimerPairRegularx.size();
         RenderFragmentList(CommonFragments);
         RenderRegularPairList(genusPrimerPairRegular);
+        RenderRegularPairExtList(genusPrimerPairExt);
+        ui->pushButton_2->setEnabled(true);
 }
 
 void MainWindow::set_status(QString message){
     ui->plainTextEdit->setPlainText(QString::fromStdString("\n")+message+ui->plainTextEdit->toPlainText());
+}
+
+void MainWindow::on_listWidget_4_currentTextChanged(const QString &currentText)
+{
+    RenderRegularPairExtListDetail(currentText);
 }
