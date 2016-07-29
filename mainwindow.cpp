@@ -237,7 +237,7 @@ void MainWindow::RenderRegularPairExtList(vector <GenusPrimerPair> &genusPrimerP
 void MainWindow::RenderRegularPairExtListDetail(const QString &name){
     ui->tableView->setEditTriggers(QTableView::NoEditTriggers);
     ui->tableView->setSelectionBehavior(QTableView::SelectRows);
-
+    model->clear();
      model->setColumnCount(6);
      model->setHeaderData(0,Qt::Horizontal,tr("引物1序列"));
      model->setHeaderData(1,Qt::Horizontal,tr("引物1头部位置"));
@@ -285,6 +285,7 @@ void MainWindow::RenderRegularPairExtListDetail(const QString &name){
 void MainWindow::RenderRegularPairListDetail(const QString &name){
     ui->tableView->setEditTriggers(QTableView::NoEditTriggers);
     ui->tableView->setSelectionBehavior(QTableView::SelectRows);
+    model->clear();
      model->setColumnCount(6);
      model->setHeaderData(0,Qt::Horizontal,tr("引物1序列"));
      model->setHeaderData(1,Qt::Horizontal,tr("引物1头部位置"));
