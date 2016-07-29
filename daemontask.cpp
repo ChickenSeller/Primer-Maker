@@ -6,7 +6,7 @@ extern float workdone;
 
 DaemonTask::DaemonTask()
 {
-
+    totalwork=0;
 }
 DaemonTask::~DaemonTask()
 {
@@ -14,17 +14,23 @@ DaemonTask::~DaemonTask()
 }
 
 void DaemonTask::run(){
-    DaemonWorker worker;
+    DaemonWorker* worker = new DaemonWorker;
+    connect(worker, SIGNAL(signal_worker_status(QString)), this, SLOT(set_worker_status(QString)));
+
     vector <GenusNotPaired> res;
-    GenusCollection collection = worker.LoadTargetGenus(config.sourceGenus,config.targetGenus);
-    SimpleGenusCollection x = worker.LoadSimpleSourceGenus(config.sourceGenus);
-    CommonFragments = worker.GetCommonFragmentFromGenus(collection,x,config.fragmentCoverage);
-    genusPrimerPairRegular = worker.MakePair(collection,CommonFragments,config.productLengthBottom,config.productLengthTop);
-    genusPrimerPairRegular = worker.FilterFragment(genusPrimerPairRegular, res);
+    GenusCollection collection = worker->LoadTargetGenus(config.sourceGenus,config.targetGenus);
+    SimpleGenusCollection x = worker->LoadSimpleSourceGenus(config.sourceGenus);
+    CommonFragments = worker->GetCommonFragmentFromGenus(collection,x,config.fragmentCoverage);
+    genusPrimerPairRegular = worker->MakePair(collection,CommonFragments,config.productLengthBottom,config.productLengthTop);
+    genusPrimerPairRegular = worker->FilterFragment(genusPrimerPairRegular, res);
     vector <GenusPrimerPair> lonepair;
-    lonepair = worker.PairTheLone(collection,CommonFragments,res);
-    lonepair = worker.FilterFragment(lonepair, res);
+    lonepair = worker->PairTheLone(collection,CommonFragments,res);
+    lonepair = worker->FilterFragment(lonepair, res);
     emit signal_complete_proccess("OK");
+}
+
+void DaemonTask::set_worker_status(QString message){
+    emit signal_status(message);
 }
 
 

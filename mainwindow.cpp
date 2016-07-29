@@ -12,6 +12,7 @@
 #include "daemonworker.h"
 #include "daemontask.h"
 #include <QTime>
+#include <QThread>
 #include "QStandardItemModel"
 
 string currentdoing;
@@ -164,7 +165,11 @@ void MainWindow::test(){
     newstr>>tempInt;
     newstr.clear();
     DaemonTask *t=new DaemonTask();
-    connect(t, SIGNAL(signal_complete_proccess(QString)), this, SLOT(set_complete_proccess(QString)));
+    //QThread *t;
+    //tx->moveToThread(t);
+    QObject::connect(t, SIGNAL(signal_complete_proccess(QString)), this, SLOT(set_complete_proccess(QString)));
+    QObject::connect(t, SIGNAL(signal_status(QString)), this, SLOT(set_status(QString)));
+
     t->start();
 
 }
@@ -264,11 +269,10 @@ void MainWindow::on_listWidget_3_currentTextChanged(const QString &currentText)
     RenderRegularPairListDetail(currentText);
 }
 
-void MainWindow::set_complete_proccess(QString){
-
-
-    string s = "";
+void MainWindow::set_complete_proccess(QString message){
+    string s = message.toStdString();
     stringstream newstr;
+    /*
     for(int i=0;i<CommonFragments.size();i++){
         vector <string> tempString = CommonFragments[i].fragments;
         s+=CommonFragments[i].name+"\n";
@@ -276,6 +280,7 @@ void MainWindow::set_complete_proccess(QString){
             s+=tempString[j]+"\n";
         }
     }
+    */
 
     //ui->lineEdit->setText(QString::fromStdString("Success"));
 
@@ -364,4 +369,8 @@ void MainWindow::set_complete_proccess(QString){
         //int mmm=genusPrimerPairRegularx.size();
         RenderFragmentList(CommonFragments);
         RenderRegularPairList(genusPrimerPairRegular);
+}
+
+void MainWindow::set_status(QString message){
+    ui->plainTextEdit->setPlainText(QString::fromStdString("\n")+message+ui->plainTextEdit->toPlainText());
 }

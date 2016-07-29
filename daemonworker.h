@@ -3,9 +3,11 @@
 #include "datadef.h"
 #include<fstream>
 #include<sstream>
+#include<QObject>
 using namespace std;
-class DaemonWorker
+class DaemonWorker:public QObject
 {
+    Q_OBJECT
 public:
     string method;
     DaemonWorker();
@@ -38,6 +40,8 @@ public:
     //vector <string> GetGenusCommonFragment()
 protected:
     void run();
+signals:
+    void signal_worker_status(QString);
 };
 
 #endif // DAEMONWORKER_H

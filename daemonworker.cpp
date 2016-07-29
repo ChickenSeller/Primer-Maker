@@ -13,6 +13,7 @@ DaemonWorker::DaemonWorker()
 //加载目标属
 GenusCollection DaemonWorker::LoadTargetGenus(string filePath,string targetFileName){//filepath==环境属文件夹 target==目标属文件路径
     currentdoing = "正在加载目标属";
+    emit signal_worker_status(QString::fromStdString(currentdoing));
     totalwork = 0;
     if(filePath==""){
         throw "NULL_PATH";
@@ -34,6 +35,7 @@ GenusCollection DaemonWorker::LoadTargetGenus(string filePath,string targetFileN
             if(fileInfo->at(i).fileName().toStdString()==targetGenusList.genus[j]){
                 Genus currentGenus = GetGenus(fileInfo->at(i).filePath().toStdString(),fileInfo->at(i).fileName().toStdString());
                 currentCollection.genus.push_back(currentGenus);
+                emit signal_worker_status(QString::fromStdString(currentdoing+"\t"+currentGenus.name));
                 break;
             }
         }
@@ -44,6 +46,7 @@ GenusCollection DaemonWorker::LoadTargetGenus(string filePath,string targetFileN
 //加载环境属
 SimpleGenusCollection DaemonWorker::LoadSimpleSourceGenus(string filePath){
     currentdoing = "正在加载环境属";
+    emit signal_worker_status(QString::fromStdString(currentdoing));
     totalwork = 0;
     if(filePath==""){
         throw "NULL_PATH";
@@ -72,6 +75,8 @@ SimpleGenusCollection DaemonWorker::LoadSimpleSourceGenus(string filePath){
         tempSpecies.fragment = fileContent;
         tempSpecies.name = fileInfo->at(i).fileName().toStdString();
         currentCollection.genus.push_back(tempSpecies);
+        emit signal_worker_status(QString::fromStdString(currentdoing+"\t"+tempSpecies.name));
+
         workdone++;
     }
     return currentCollection;
@@ -226,9 +231,12 @@ vector <string> DaemonWorker::GetCommonFragmentFromSpecificGenus(Genus genus, Si
     int PctSpeciesNum;
     PctSpeciesNum = ceil(genus.species.size() * (1 - (float)coverage / 100));
     currentdoing = "正在获取" + genus.name + "内的特征片段";
+    emit signal_worker_status(QString::fromStdString(currentdoing));
     totalwork = PctSpeciesNum * PctSpeciesNum;
     workdone = 0;
     if(PctSpeciesNum == 1){
+        emit signal_worker_status(QString::fromStdString(genus.species[0].name+"\t<--->\t"+genus.species[0].name));
+
         tempCommonFragment = GetCommonFragment(genus.species[0].fragment,genus.species[0].fragment,config.fragmentLengthBottom,config.fragmentLengthTop);
         rawCommonFragment.insert(rawCommonFragment.end(),tempCommonFragment.begin(),tempCommonFragment.end());
         rawCommonFragment = Unique(rawCommonFragment);
@@ -237,6 +245,7 @@ vector <string> DaemonWorker::GetCommonFragmentFromSpecificGenus(Genus genus, Si
     else{
         for(int i = 0; i < PctSpeciesNum; i++){
             for(int j = i + 1; j < PctSpeciesNum; j++){
+                emit signal_worker_status(QString::fromStdString(genus.species[i].name+"\t<--->\t"+genus.species[j].name));
                 tempCommonFragment = GetCommonFragment(genus.species[i].fragment,genus.species[j].fragment,config.fragmentLengthBottom,config.fragmentLengthTop);
                 rawCommonFragment.insert(rawCommonFragment.end(),tempCommonFragment.begin(),tempCommonFragment.end());
                 rawCommonFragment = Unique(rawCommonFragment);
