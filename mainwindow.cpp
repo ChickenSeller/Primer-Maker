@@ -135,9 +135,9 @@ void MainWindow::LoadConfig(){
         }
     }else{
         QMessageBox::StandardButton reply;
-            reply = QMessageBox::critical(this, tr("配置加载错误"),
-                                            "配置文件无法正确加载,改用默认配置",
-                                            QMessageBox::Abort);
+            //reply = QMessageBox::critical(this, tr("配置加载错误"),
+            //                                "配置文件无法正确加载,改用默认配置",
+             //                               QMessageBox::Abort);
             config.fragmentCoverage = 70;
             config.fragmentInaccuracy = 3;
             config.fragmentLengthBottom = 20;
