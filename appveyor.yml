@@ -6,3 +6,6 @@ build_script:
   - mingw32-make
   - cd release/
   - windeployqt PrimeMakerGUI.exe
+artifacts:
+- path: release/
+  name: Release1.0.0
