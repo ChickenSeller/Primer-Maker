@@ -4,3 +4,5 @@ install:
 build_script:
   - qmake PrimeMakerGUI.pro
   - mingw32-make
+  - cd release/
+  - windeployqt PrimeMakerGUI.exe
