@@ -32,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //config = new Config;
     LoadConfig();
     ui->pushButton_2->setEnabled(false);
+    ui->pushButton->setEnabled(false);
     //config.sourceGenus = "text";
     //ui->lineEdit->setText(QString::fromStdString(config.sourceGenus));
     DaemonWorker worker1;
@@ -77,6 +78,7 @@ void MainWindow::on_action_2_triggered()
             Form_Custom_Task_Pair = new DialogCustomTask_Pair();
             if(Form_Custom_Task_Pair->exec() == QDialog::Accepted){
                 SaveConfig();
+                test();
             }
         }
 
@@ -152,6 +154,7 @@ void MainWindow::LoadConfig(){
 
 void MainWindow::test(){
     ui->pushButton_2->setEnabled(false);
+    ui->pushButton->setEnabled(false);
     ui->plainTextEdit->clear();
     ui->listWidget->reset();
     ui->listWidget->clear();
@@ -338,7 +341,7 @@ void MainWindow::on_listWidget_3_currentTextChanged(const QString &currentText)
 
 void MainWindow::set_complete_proccess(QString message){
     string s = message.toStdString();
-    stringstream newstr;
+
     /*
     for(int i=0;i<CommonFragments.size();i++){
         vector <string> tempString = CommonFragments[i].fragments;
@@ -352,86 +355,7 @@ void MainWindow::set_complete_proccess(QString message){
     //ui->lineEdit->setText(QString::fromStdString("Success"));
     ui->plainTextEdit->setPlainText(QString::fromStdString(s+"\n")+ui->plainTextEdit->toPlainText());
     QApplication::processEvents();
-    QDir *temp = new QDir;
-        bool exist = temp->exists(QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/filtered")));
-        if(exist){
 
-        }else
-        {
-            bool ok = temp->mkdir(QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/filtered")));
-        }
-        if(!temp->exists(QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/paired")))){
-            temp->mkdir(QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/paired")));
-        }
-        if(!temp->exists(QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/result")))){
-            temp->mkdir(QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/result")));
-        }
-        for(int i=0;i<CommonFragments.size();i++){
-            ofstream ofile;
-            QString filename = QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/filtered/"+ CommonFragments[i].name.substr(0,CommonFragments[i].name.length()-3)));
-            ofile.open(filename.toStdString().c_str());
-            string tempstr;
-            for(int j=0;j<CommonFragments[i].fragments.size();j++){
-                tempstr+=CommonFragments[i].fragments[j]+"\n";
-            }
-            ofile << tempstr;
-            ofile.close();
-        }
-
-        for(int i=0;i<genusPrimerPairRegular.size();i++){
-            ofstream ofile;
-            QString filename = QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/paired/"+ genusPrimerPairRegular[i].name.substr(0,genusPrimerPairRegular[i].name.length()-3)));
-            ofile.open(filename.toStdString().c_str());
-            string tempstr2;
-            GenusPrimerPair tempPair = genusPrimerPairRegular[i];
-            for(int j=0;j<tempPair.pairs.size();j++){
-                string pos1,pos2,length1,length2;
-                newstr<<tempPair.pairs[j].pos1;
-                newstr>>pos1;
-                newstr.clear();
-                newstr<<tempPair.pairs[j].pos2;
-                newstr>>pos2;
-                newstr.clear();
-                newstr<<tempPair.pairs[j].length1;
-                newstr>>length1;
-                newstr.clear();
-                newstr<<tempPair.pairs[j].length2;
-                newstr>>length2;
-                newstr.clear();
-                tempstr2+=tempPair.pairs[j].fragment1+"\t\t"+pos1+"\t\t"
-                        +length1+"\t\t"+tempPair.pairs[j].fragment2+"\t\t"
-                        +pos2+"\t\t"+length2+"\n";
-            }
-            ofile << tempstr2;
-            ofile.close();
-        }
-        for(int i=0;i<genusPrimerPairExt.size();i++){
-            ofstream ofile;
-            QString filename = QDir::toNativeSeparators(QDir::currentPath()+QString::fromStdString("/paired/"+ genusPrimerPairExt[i].name.substr(0,genusPrimerPairExt[i].name.length()-3)));
-            ofile.open(filename.toStdString().c_str());
-            string tempstr2;
-            GenusPrimerPair tempPair = genusPrimerPairExt[i];
-            for(int j=0;j<tempPair.pairs.size();j++){
-                string pos1,pos2,length1,length2;
-                newstr<<tempPair.pairs[j].pos1;
-                newstr>>pos1;
-                newstr.clear();
-                newstr<<tempPair.pairs[j].pos2;
-                newstr>>pos2;
-                newstr.clear();
-                newstr<<tempPair.pairs[j].length1;
-                newstr>>length1;
-                newstr.clear();
-                newstr<<tempPair.pairs[j].length2;
-                newstr>>length2;
-                newstr.clear();
-                tempstr2+=tempPair.pairs[j].fragment1+"\t\t"+pos1+"\t\t"
-                        +length1+"\t\t"+tempPair.pairs[j].fragment2+"\t\t"
-                        +pos2+"\t\t"+length2+"\n";
-            }
-            ofile << tempstr2;
-            ofile.close();
-        }
         /*
         for(int i=0;i<genusPrimerPairRegular.size();i++){
             ofstream ofile;
@@ -466,6 +390,7 @@ void MainWindow::set_complete_proccess(QString message){
         RenderRegularPairList(genusPrimerPairRegular);
         RenderRegularPairExtList(genusPrimerPairExt);
         ui->pushButton_2->setEnabled(true);
+        ui->pushButton->setEnabled(true);
 }
 
 void MainWindow::set_status(QString message){
@@ -475,4 +400,108 @@ void MainWindow::set_status(QString message){
 void MainWindow::on_listWidget_4_currentTextChanged(const QString &currentText)
 {
     RenderRegularPairExtListDetail(currentText);
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    QString filename = QFileDialog::getExistingDirectory(this,"导出文件位置",QDir::currentPath());
+    if(!filename.isNull()){
+        ExportResult(filename);
+    }
+}
+
+void MainWindow::ExportResult(QString file_path){
+    stringstream newstr;
+    QDir *temp = new QDir;
+        bool exist = temp->exists(QDir::toNativeSeparators(file_path+QString::fromStdString("/filtered")));
+        if(exist){
+
+        }else
+        {
+            bool ok = temp->mkdir(QDir::toNativeSeparators(file_path+QString::fromStdString("/filtered")));
+        }
+        /*
+        if(!temp->exists(QDir::toNativeSeparators(file_path+QString::fromStdString("/paired")))){
+            temp->mkdir(QDir::toNativeSeparators(file_path+QString::fromStdString("/paired")));
+        }
+        */
+        if(!temp->exists(QDir::toNativeSeparators(file_path+QString::fromStdString("/result")))){
+            temp->mkdir(QDir::toNativeSeparators(file_path+QString::fromStdString("/result")));
+        }
+        for(int i=0;i<CommonFragments.size();i++){
+            ofstream ofile;
+            QString filename = QDir::toNativeSeparators(file_path+QString::fromStdString("/filtered/"+ CommonFragments[i].name.substr(0,CommonFragments[i].name.length()-3)));
+            ofile.open(filename.toStdString().c_str());
+            string tempstr;
+            for(int j=0;j<CommonFragments[i].fragments.size();j++){
+                tempstr+=CommonFragments[i].fragments[j]+"\n";
+            }
+            ofile << tempstr;
+            ofile.close();
+        }
+
+        for(int i=0;i<genusPrimerPairRegular.size();i++){
+            ofstream ofile;
+            QString filename = QDir::toNativeSeparators(file_path+QString::fromStdString("/result/"+ genusPrimerPairRegular[i].name.substr(0,genusPrimerPairRegular[i].name.length()-3)));
+            ofile.open(filename.toStdString().c_str());
+            string tempstr2;
+            GenusPrimerPair tempPair = genusPrimerPairRegular[i];
+            for(int j=0;j<tempPair.pairs.size();j++){
+                string pos1,pos2,length1,length2;
+                newstr<<tempPair.pairs[j].pos1;
+                newstr>>pos1;
+                newstr.clear();
+                newstr<<tempPair.pairs[j].pos2;
+                newstr>>pos2;
+                newstr.clear();
+                newstr<<tempPair.pairs[j].length1;
+                newstr>>length1;
+                newstr.clear();
+                newstr<<tempPair.pairs[j].length2;
+                newstr>>length2;
+                newstr.clear();
+                tempstr2+=tempPair.pairs[j].fragment1+"\t\t"+pos1+"\t\t"
+                        +length1+"\t\t"+tempPair.pairs[j].fragment2+"\t\t"
+                        +pos2+"\t\t"+length2+"\n";
+            }
+            ofile << tempstr2;
+            ofile.close();
+        }
+        for(int i=0;i<genusPrimerPairExt.size();i++){
+            ofstream ofile;
+            QString filename = QDir::toNativeSeparators(file_path+QString::fromStdString("/result/"+ genusPrimerPairExt[i].name.substr(0,genusPrimerPairExt[i].name.length()-3)));
+            ofile.open(filename.toStdString().c_str());
+            string tempstr2;
+            GenusPrimerPair tempPair = genusPrimerPairExt[i];
+            for(int j=0;j<tempPair.pairs.size();j++){
+                string pos1,pos2,length1,length2;
+                newstr<<tempPair.pairs[j].pos1;
+                newstr>>pos1;
+                newstr.clear();
+                newstr<<tempPair.pairs[j].pos2;
+                newstr>>pos2;
+                newstr.clear();
+                newstr<<tempPair.pairs[j].length1;
+                newstr>>length1;
+                newstr.clear();
+                newstr<<tempPair.pairs[j].length2;
+                newstr>>length2;
+                newstr.clear();
+                tempstr2+=tempPair.pairs[j].fragment1+"\t\t"+pos1+"\t\t"
+                        +length1+"\t\t"+tempPair.pairs[j].fragment2+"\t\t"
+                        +pos2+"\t\t"+length2+"\n";
+            }
+            ofile << tempstr2;
+            ofile.close();
+        }
+        QMessageBox::information(NULL,"导出成功","成功导出结果到指定文件夹",QMessageBox::Yes);
+
+}
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    QString filename = QFileDialog::getExistingDirectory(this,"导出文件位置",QDir::currentPath());
+    if(!filename.isNull()){
+        ExportResult(filename);
+    }
 }

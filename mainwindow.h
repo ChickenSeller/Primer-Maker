@@ -8,6 +8,7 @@
 #include "dialogaboutme.h"
 #include <QMainWindow>
 #include "datadef.h"
+#include "qfiledialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -36,6 +37,7 @@ public:
     void RenderFragmentListDetail(const QString & name);
     void RenderRegularPairExtList(vector <GenusPrimerPair> &genusPrimerPair);
     void RenderRegularPairExtListDetail(const QString & name);
+    void ExportResult(QString file_path);
 
 
 
@@ -59,6 +61,10 @@ private slots:
     void set_status(QString);
 
     void on_listWidget_4_currentTextChanged(const QString &currentText);
+
+    void on_pushButton_clicked();
+
+    void on_pushButton_2_clicked();
 
 private:
     Ui::MainWindow *ui;

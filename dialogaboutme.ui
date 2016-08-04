@@ -87,7 +87,7 @@ p, li { white-space: pre-wrap; }
     </rect>
    </property>
    <property name="text">
-    <string>Version: 0.4</string>
+    <string>Version: 1.0.0</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_3">
