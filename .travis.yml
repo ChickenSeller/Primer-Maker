@@ -1,3 +1,20 @@
+sudo: required
+dist: trusty
+os:
+  - linux
+  - osx
+
+env:
+  - QT_VERSION=5
+
+
+branches:
+  except:
+    - project/appveyor
+    - project/docs
+
+language: cpp
+
 before_install:
     - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
     - sudo apt-get update -qq
