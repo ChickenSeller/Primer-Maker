@@ -242,12 +242,12 @@ void MainWindow::RenderRegularPairExtListDetail(const QString &name){
     ui->tableView->setSelectionBehavior(QTableView::SelectRows);
     model->clear();
      model->setColumnCount(6);
-     model->setHeaderData(0,Qt::Horizontal,tr("引物1序列"));
-     model->setHeaderData(1,Qt::Horizontal,tr("引物1头部位置"));
-     model->setHeaderData(2,Qt::Horizontal,tr("引物1长度"));
-     model->setHeaderData(3,Qt::Horizontal,tr("引物2序列"));
-     model->setHeaderData(4,Qt::Horizontal,tr("引物2头部位置"));
-     model->setHeaderData(5,Qt::Horizontal,tr("引物2长度"));
+     model->setHeaderData(0,Qt::Horizontal,tr("前引物序列"));
+     model->setHeaderData(1,Qt::Horizontal,tr("前引物头部位置"));
+     model->setHeaderData(2,Qt::Horizontal,tr("前引物长度"));
+     model->setHeaderData(3,Qt::Horizontal,tr("后引物序列"));
+     model->setHeaderData(4,Qt::Horizontal,tr("后引物头部位置"));
+     model->setHeaderData(5,Qt::Horizontal,tr("后引物长度"));
 
 
     int i=0;
@@ -290,12 +290,12 @@ void MainWindow::RenderRegularPairListDetail(const QString &name){
     ui->tableView->setSelectionBehavior(QTableView::SelectRows);
     model->clear();
      model->setColumnCount(6);
-     model->setHeaderData(0,Qt::Horizontal,tr("引物1序列"));
-     model->setHeaderData(1,Qt::Horizontal,tr("引物1头部位置"));
-     model->setHeaderData(2,Qt::Horizontal,tr("引物1长度"));
-     model->setHeaderData(3,Qt::Horizontal,tr("引物2序列"));
-     model->setHeaderData(4,Qt::Horizontal,tr("引物2头部位置"));
-     model->setHeaderData(5,Qt::Horizontal,tr("引物2长度"));
+     model->setHeaderData(0,Qt::Horizontal,tr("前引物序列"));
+     model->setHeaderData(1,Qt::Horizontal,tr("前引物头部位置"));
+     model->setHeaderData(2,Qt::Horizontal,tr("前引物长度"));
+     model->setHeaderData(3,Qt::Horizontal,tr("后引物序列"));
+     model->setHeaderData(4,Qt::Horizontal,tr("后引物头部位置"));
+     model->setHeaderData(5,Qt::Horizontal,tr("后引物长度"));
 
 
     int i=0;
