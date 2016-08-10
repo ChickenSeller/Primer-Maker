@@ -94,13 +94,15 @@ public:
     int pos2;
     int length2;
     string fragment2;
-    PairInfo(int a,int b,int c,int d,string e,string f){
-            pos1 = a;
-            length1 = b;
-            pos2 = c;
-            length2 = d;
-            fragment1=e;
-            fragment2=f;
+    int totallength;
+    PairInfo(int p1,int l1,int p2,int l2,string str1,string str2,int tl){
+            pos1 = p1;
+            length1 = l1;
+            pos2 = p2;
+            length2 = l2;
+            fragment1 = str1;
+            fragment2 = str2;
+            totallength = tl;
         }
 };
 class PrimerPair{

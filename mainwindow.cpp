@@ -241,13 +241,14 @@ void MainWindow::RenderRegularPairExtListDetail(const QString &name){
     ui->tableView->setEditTriggers(QTableView::NoEditTriggers);
     ui->tableView->setSelectionBehavior(QTableView::SelectRows);
     model->clear();
-     model->setColumnCount(6);
+     model->setColumnCount(7);
      model->setHeaderData(0,Qt::Horizontal,tr("前引物序列"));
      model->setHeaderData(1,Qt::Horizontal,tr("前引物头部位置"));
      model->setHeaderData(2,Qt::Horizontal,tr("前引物长度"));
      model->setHeaderData(3,Qt::Horizontal,tr("后引物序列"));
      model->setHeaderData(4,Qt::Horizontal,tr("后引物头部位置"));
      model->setHeaderData(5,Qt::Horizontal,tr("后引物长度"));
+     model->setHeaderData(6,Qt::Horizontal,tr("产物总长度"));
 
 
     int i=0;
@@ -258,7 +259,7 @@ void MainWindow::RenderRegularPairExtListDetail(const QString &name){
     }
     for(int j=0;j<genusPrimerPairExt[i].pairs.size();j++){
         stringstream newstr;
-        string pos1,pos2,length1,length2;
+        string pos1,pos2,length1,length2,totallength;
         newstr<<genusPrimerPairExt[i].pairs[j].pos1;
         newstr>>pos1;
         newstr.clear();
@@ -271,14 +272,18 @@ void MainWindow::RenderRegularPairExtListDetail(const QString &name){
         newstr<<genusPrimerPairExt[i].pairs[j].length2;
         newstr>>length2;
         newstr.clear();
+        newstr<<genusPrimerPairExt[i].pairs[j].totallength;
+        newstr>>totallength;
+        newstr.clear();
         QStandardItem* item1 = new QStandardItem(tr(genusPrimerPairExt[i].pairs[j].fragment1.c_str()));
         QStandardItem* item2 = new QStandardItem(tr(pos1.c_str()));
         QStandardItem* item3 = new QStandardItem(tr(length1.c_str()));
         QStandardItem* item4 = new QStandardItem(tr(genusPrimerPairExt[i].pairs[j].fragment2.c_str()));
         QStandardItem* item5 = new QStandardItem(tr(pos2.c_str()));
         QStandardItem* item6 = new QStandardItem(tr(length2.c_str()));
+        QStandardItem* item7 = new QStandardItem(tr(totallength.c_str()));
         QList<QStandardItem*> item;
-         item << item1 << item2 << item3 << item4 << item5 << item6;
+         item << item1 << item2 << item3 << item4 << item5 << item6 <<item7;
          model->appendRow(item);
     }
     ui->tableView->setModel(model);
@@ -289,13 +294,14 @@ void MainWindow::RenderRegularPairListDetail(const QString &name){
     ui->tableView->setEditTriggers(QTableView::NoEditTriggers);
     ui->tableView->setSelectionBehavior(QTableView::SelectRows);
     model->clear();
-     model->setColumnCount(6);
+     model->setColumnCount(7);
      model->setHeaderData(0,Qt::Horizontal,tr("前引物序列"));
      model->setHeaderData(1,Qt::Horizontal,tr("前引物头部位置"));
      model->setHeaderData(2,Qt::Horizontal,tr("前引物长度"));
      model->setHeaderData(3,Qt::Horizontal,tr("后引物序列"));
      model->setHeaderData(4,Qt::Horizontal,tr("后引物头部位置"));
      model->setHeaderData(5,Qt::Horizontal,tr("后引物长度"));
+     model->setHeaderData(6,Qt::Horizontal,tr("产物总长度"));
 
 
     int i=0;
@@ -306,7 +312,7 @@ void MainWindow::RenderRegularPairListDetail(const QString &name){
     }
     for(int j=0;j<genusPrimerPairRegular[i].pairs.size();j++){
         stringstream newstr;
-        string pos1,pos2,length1,length2;
+        string pos1,pos2,length1,length2,totallength;
         newstr<<genusPrimerPairRegular[i].pairs[j].pos1;
         newstr>>pos1;
         newstr.clear();
@@ -319,14 +325,18 @@ void MainWindow::RenderRegularPairListDetail(const QString &name){
         newstr<<genusPrimerPairRegular[i].pairs[j].length2;
         newstr>>length2;
         newstr.clear();
+        newstr<<genusPrimerPairRegular[i].pairs[j].totallength;
+        newstr>>totallength;
+        newstr.clear();
         QStandardItem* item1 = new QStandardItem(tr(genusPrimerPairRegular[i].pairs[j].fragment1.c_str()));
         QStandardItem* item2 = new QStandardItem(tr(pos1.c_str()));
         QStandardItem* item3 = new QStandardItem(tr(length1.c_str()));
         QStandardItem* item4 = new QStandardItem(tr(genusPrimerPairRegular[i].pairs[j].fragment2.c_str()));
         QStandardItem* item5 = new QStandardItem(tr(pos2.c_str()));
         QStandardItem* item6 = new QStandardItem(tr(length2.c_str()));
+        QStandardItem* item7 = new QStandardItem(tr(totallength.c_str()));
         QList<QStandardItem*> item;
-         item << item1 << item2 << item3 << item4 << item5 << item6;
+         item << item1 << item2 << item3 << item4 << item5 << item6 << item7;
          model->appendRow(item);
     }
     ui->tableView->setModel(model);

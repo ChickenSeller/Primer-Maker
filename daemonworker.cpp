@@ -342,7 +342,7 @@ vector <PairInfo> DaemonWorker::Pair(vector<FragmentPair> in, int MIN, int MAX){
             t2++;
         }
         for(j = t1; j <= t2; j++){
-            res.push_back(PairInfo(in[i].posA, in[i].posB, in[j].posA, in[j].posB,in[i].fragment,in[j].fragment));
+            res.push_back(PairInfo(in[i].posA, in[i].posB, in[j].posA, in[j].posB, in[i].fragment, in[j].fragment, in[j].posA-in[i].posA+in[j].posB));
         }
     }
     return res;
@@ -540,16 +540,16 @@ vector <GenusPrimerPair> DaemonWorker::PairTheLone(GenusCollection targetGenus, 
                 int pos = thisgenus.species[k].fragment.find(thisFragments.fragments[j]);
                 if(pos != -1 && pos + 230 < thisgenus.species[k].fragment.length()){
                     int strlength = thisFragments.fragments[j].length();
-                    tempPair.pairs.push_back(PairInfo(pos,strlength,pos+200,20,thisFragments.fragments[j],thisgenus.species[k].fragment.substr(pos+200,20)));
-                    tempPair.pairs.push_back(PairInfo(pos,strlength,pos+200,21,thisFragments.fragments[j],thisgenus.species[k].fragment.substr(pos+200,21)));
-                    tempPair.pairs.push_back(PairInfo(pos,strlength,pos+200,22,thisFragments.fragments[j],thisgenus.species[k].fragment.substr(pos+200,22)));
-                    tempPair.pairs.push_back(PairInfo(pos,strlength,pos+200,23,thisFragments.fragments[j],thisgenus.species[k].fragment.substr(pos+200,23)));
-                    tempPair.pairs.push_back(PairInfo(pos,strlength,pos+200,24,thisFragments.fragments[j],thisgenus.species[k].fragment.substr(pos+200,24)));
-                    tempPair.pairs.push_back(PairInfo(pos,strlength,pos+200,25,thisFragments.fragments[j],thisgenus.species[k].fragment.substr(pos+200,25)));
-                    tempPair.pairs.push_back(PairInfo(pos,strlength,pos+200,26,thisFragments.fragments[j],thisgenus.species[k].fragment.substr(pos+200,26)));
-                    tempPair.pairs.push_back(PairInfo(pos,strlength,pos+200,27,thisFragments.fragments[j],thisgenus.species[k].fragment.substr(pos+200,27)));
-                    tempPair.pairs.push_back(PairInfo(pos,strlength,pos+200,28,thisFragments.fragments[j],thisgenus.species[k].fragment.substr(pos+200,28)));
-                    tempPair.pairs.push_back(PairInfo(pos,strlength,pos+200,29,thisFragments.fragments[j],thisgenus.species[k].fragment.substr(pos+200,29)));
+                    tempPair.pairs.push_back(PairInfo(pos,strlength,pos+200,20,thisFragments.fragments[j],thisgenus.species[k].fragment.substr(pos+200,20),220));
+                    tempPair.pairs.push_back(PairInfo(pos,strlength,pos+200,21,thisFragments.fragments[j],thisgenus.species[k].fragment.substr(pos+200,21),221));
+                    tempPair.pairs.push_back(PairInfo(pos,strlength,pos+200,22,thisFragments.fragments[j],thisgenus.species[k].fragment.substr(pos+200,22),222));
+                    tempPair.pairs.push_back(PairInfo(pos,strlength,pos+200,23,thisFragments.fragments[j],thisgenus.species[k].fragment.substr(pos+200,23),223));
+                    tempPair.pairs.push_back(PairInfo(pos,strlength,pos+200,24,thisFragments.fragments[j],thisgenus.species[k].fragment.substr(pos+200,24),224));
+                    tempPair.pairs.push_back(PairInfo(pos,strlength,pos+200,25,thisFragments.fragments[j],thisgenus.species[k].fragment.substr(pos+200,25),225));
+                    tempPair.pairs.push_back(PairInfo(pos,strlength,pos+200,26,thisFragments.fragments[j],thisgenus.species[k].fragment.substr(pos+200,26),226));
+                    tempPair.pairs.push_back(PairInfo(pos,strlength,pos+200,27,thisFragments.fragments[j],thisgenus.species[k].fragment.substr(pos+200,27),227));
+                    tempPair.pairs.push_back(PairInfo(pos,strlength,pos+200,28,thisFragments.fragments[j],thisgenus.species[k].fragment.substr(pos+200,28),228));
+                    tempPair.pairs.push_back(PairInfo(pos,strlength,pos+200,29,thisFragments.fragments[j],thisgenus.species[k].fragment.substr(pos+200,29),229));
                 }
             }
         }
