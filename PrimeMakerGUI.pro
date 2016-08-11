@@ -41,3 +41,11 @@ FORMS    += mainwindow.ui \
     dialogcustomtask_fragment.ui \
     dialogcustomtask_pair.ui \
     dialogaboutme.ui
+
+RESOURCES += \
+    resource.qrc
+
+DISTFILES += \
+    app.rc
+
+RC_FILE+= app.rc
