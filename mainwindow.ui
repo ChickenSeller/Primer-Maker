@@ -28,7 +28,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab_3">
      <attribute name="title">
@@ -221,7 +221,6 @@
      <string>任务(&amp;T)</string>
     </property>
     <addaction name="action"/>
-    <addaction name="action_2"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
