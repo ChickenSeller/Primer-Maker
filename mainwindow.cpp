@@ -515,3 +515,8 @@ void MainWindow::on_pushButton_2_clicked()
         ExportResult(filename);
     }
 }
+
+void MainWindow::on_actionExit_triggered()
+{
+    exit(0);
+}

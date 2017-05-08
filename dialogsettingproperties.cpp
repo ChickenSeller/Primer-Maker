@@ -9,6 +9,9 @@ DialogSettingProperties::DialogSettingProperties(QWidget *parent) :
     ui(new Ui::DialogSettingProperties)
 {
     ui->setupUi(this);
+    //隐藏容差选项
+    ui->label_6->setVisible(false);
+    ui->lineEdit_6->setVisible(false);
     getConfig();
 }
 

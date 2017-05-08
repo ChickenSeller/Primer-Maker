@@ -8,6 +8,9 @@ DialogCustomTask_Fragment::DialogCustomTask_Fragment(QWidget *parent) :
     ui(new Ui::DialogCustomTask_Fragment)
 {
     ui->setupUi(this);
+    //隐藏容差选项
+    ui->label_6->setVisible(false);
+    ui->lineEdit_6->setVisible(false);
     setWindowFlags(windowFlags() &~ (Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint));
     getConfig();
 }
